@@ -1,0 +1,27 @@
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  position: relative;
+}
+
+.game-screen-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 8px 16px 90px;
+  flex: 1;
+}
+
+.game-screen-critter {
+  position: fixed;
+  left: 10px;
+  bottom: 16px;
+  z-index: 5;
+}
+
+@media (min-width: 540px) {
+  .game-screen-critter {
+    left: 24px;
+  }
+}

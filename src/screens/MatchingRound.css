@@ -1,0 +1,194 @@
+.matching-round {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100%;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+.matching-round-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 0 20px;
+}
+
+.matching-round-board {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px;
+  flex: 1;
+}
+
+.matching-round-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.matching-word-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 70px;
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 23px;
+  line-height: 1.15;
+  color: var(--ink);
+  text-align: center;
+  transition: background 0.15s ease, outline 0.15s ease, transform 0.15s ease;
+}
+
+.matching-word-card--hover {
+  outline: 3px solid #2fa4e7;
+  transform: scale(1.03);
+}
+
+.matching-word-card--selected {
+  outline: 3px solid #9b6bdf;
+  transform: scale(1.05);
+}
+
+.matching-word-card--matched {
+  background: #bdeab8;
+  color: #2f6b2d;
+}
+
+.matching-word-card-result {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.matching-word-card--wrong {
+  animation: word-wrong-shake 0.5s ease;
+  background: #ffc9c9;
+}
+
+@keyframes word-wrong-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.matching-numeral-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  border-radius: var(--radius-sm);
+  background: var(--color-blue-bg);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--ink);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.matching-numeral-card--selected {
+  outline: 3px solid #9b6bdf;
+  transform: scale(1.05);
+}
+
+.matching-numeral-card--matched {
+  background: #e4e9ee;
+  color: #9aa6b3;
+}
+
+.matching-numeral-card--dragging {
+  opacity: 0.35;
+}
+
+.matching-drag-ghost {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-blue-bg);
+  box-shadow: 0 12px 24px rgba(47, 58, 74, 0.3);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--ink);
+  pointer-events: none;
+  outline: 3px solid #2fa4e7;
+}
+
+.matching-round-controls {
+  display: flex;
+  gap: 10px;
+  padding: 4px 16px 16px;
+}
+
+.matching-round-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.12s ease;
+}
+
+.matching-round-btn:active {
+  transform: scale(0.96);
+}
+
+.matching-round-btn--ghost {
+  background: #ffffff;
+  color: var(--ink-soft);
+}
+
+.matching-round-btn--primary {
+  background: linear-gradient(180deg, #7bd97e, #4caf50);
+  color: #ffffff;
+}
+
+.matching-round-critter {
+  position: fixed;
+  left: 10px;
+  bottom: 16px;
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .matching-word-card--wrong {
+    animation: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .matching-numeral-card,
+  .matching-drag-ghost {
+    font-size: 26px;
+  }
+  .matching-word-card {
+    font-size: 19px;
+  }
+}

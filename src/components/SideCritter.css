@@ -1,0 +1,21 @@
+.side-critter {
+  animation: critter-peek 3.4s ease-in-out infinite;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 6px 8px rgba(47, 58, 74, 0.18));
+}
+
+@keyframes critter-peek {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-critter {
+    animation: none;
+  }
+}

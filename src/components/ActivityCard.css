@@ -1,0 +1,89 @@
+.activity-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  min-height: 76px;
+}
+
+.activity-card:active {
+  transform: scale(0.98) translateY(1px);
+  box-shadow: var(--shadow-press);
+}
+
+.activity-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  font-size: 26px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.activity-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.activity-card-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.activity-card-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-card-level {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  opacity: 0.8;
+}
+
+.activity-card-stars {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.activity-card-chevron {
+  color: var(--ink);
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.activity-card--pink {
+  background: var(--color-pink-bg);
+}
+.activity-card--yellow {
+  background: var(--color-yellow-bg);
+}
+.activity-card--purple {
+  background: var(--color-purple-bg);
+}
+.activity-card--blue {
+  background: var(--color-blue-bg);
+}
+.activity-card--green {
+  background: var(--color-green-bg);
+}

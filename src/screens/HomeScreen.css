@@ -1,0 +1,102 @@
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 16px 12px;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-greeting {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.home-greeting-hi {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  color: #1f6fb2;
+}
+
+.home-greeting-name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--ink);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.home-settings-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease;
+}
+
+.home-settings-btn:active {
+  transform: scale(0.9);
+}
+
+.home-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px 10px 6px;
+  backdrop-filter: blur(2px);
+}
+
+.home-hero-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-hero-title {
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.home-hero-sub {
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.home-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 360px) {
+  .home-hero-title {
+    font-size: 20px;
+  }
+}
+

@@ -1,0 +1,108 @@
+.ordering-game {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  position: relative;
+}
+
+.ordering-game-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 16px 90px;
+  flex: 1;
+}
+
+.ordering-game-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--cream);
+  padding: 14px 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.ordering-game-chips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.ordering-chip {
+  position: relative;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 34px;
+  color: var(--ink);
+  background: var(--color-blue-bg);
+  padding: 24px 8px;
+  min-height: 84px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.2s ease;
+}
+
+.ordering-chip:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.ordering-chip--selected {
+  background: #bdeab8;
+  opacity: 0.6;
+}
+
+.ordering-chip-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #4caf50;
+  color: #ffffff;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.ordering-chip--wrong {
+  animation: ordering-shake 0.4s ease;
+  background: #ffc9c9;
+}
+
+@keyframes ordering-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.ordering-game-critter {
+  position: fixed;
+  left: 10px;
+  bottom: 16px;
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ordering-chip--wrong {
+    animation: none;
+  }
+}

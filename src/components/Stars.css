@@ -1,0 +1,58 @@
+.star-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.star-badge-icon {
+  font-size: 20px;
+}
+
+.star-badge-count {
+  font-size: 18px;
+}
+
+.star-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.star-row-item {
+  opacity: 0.25;
+  filter: grayscale(1);
+  transition: opacity 0.2s ease;
+}
+
+.star-row-item--filled {
+  opacity: 1;
+  filter: none;
+  animation: star-pop 0.5s ease backwards;
+}
+
+@keyframes star-pop {
+  0% {
+    transform: scale(0.3) rotate(-15deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.2) rotate(8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-row-item--filled {
+    animation: none;
+  }
+}

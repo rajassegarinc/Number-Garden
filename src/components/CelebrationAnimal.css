@@ -1,0 +1,118 @@
+.celebration-animal {
+  position: relative;
+  filter: drop-shadow(0 6px 8px rgba(47, 58, 74, 0.18));
+}
+
+.celebration-animal-flag-slot {
+  position: absolute;
+  left: 66%;
+  top: 10%;
+  width: 36%;
+  height: 38%;
+}
+
+.celebration-flag {
+  transform-origin: 10% 92%;
+  animation: flag-wave 1.6s ease-in-out infinite;
+}
+
+.celebration-flag--flip {
+  transform: scaleX(-1);
+}
+
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+.celebration-trunk {
+  animation: celebration-trunk-wiggle 2.4s ease-in-out infinite;
+  transform-origin: 80px 92px;
+}
+
+@keyframes celebration-trunk-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+.celebration-tail {
+  animation: celebration-tail-curl 2s ease-in-out infinite;
+  transform-origin: 96px 160px;
+}
+
+@keyframes celebration-tail-curl {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-8deg);
+  }
+}
+
+.celebration-animal--bounce {
+  animation: celebration-bounce 1.3s ease-in-out infinite;
+}
+
+.celebration-animal--wave {
+  animation: celebration-wave 1.6s ease-in-out infinite;
+}
+
+.celebration-animal--jump {
+  animation: celebration-jump 1s ease-in-out infinite;
+}
+
+@keyframes celebration-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes celebration-wave {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes celebration-jump {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  30% {
+    transform: translateY(-16px) scaleY(1.05);
+  }
+  80% {
+    transform: translateY(0) scaleY(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration-animal--bounce,
+  .celebration-animal--wave,
+  .celebration-animal--jump,
+  .celebration-flag,
+  .celebration-trunk,
+  .celebration-tail {
+    animation: none;
+  }
+}

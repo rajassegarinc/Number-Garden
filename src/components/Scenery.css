@@ -1,0 +1,228 @@
+.scenery {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scenery-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 70%);
+}
+
+.scenery-sun {
+  position: absolute;
+  top: 4%;
+  right: 8%;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6d6 0%, #ffe28a 70%, rgba(255, 226, 138, 0) 100%);
+  box-shadow: 0 0 40px 12px rgba(255, 226, 138, 0.55);
+}
+
+.scenery-cloud {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 100px;
+  opacity: 0.9;
+  animation: drift 32s linear infinite;
+}
+
+.scenery-cloud::before,
+.scenery-cloud::after {
+  content: '';
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.scenery-cloud--a {
+  top: 10%;
+  left: -30%;
+  width: 120px;
+  height: 36px;
+}
+.scenery-cloud--a::before {
+  width: 56px;
+  height: 56px;
+  top: -28px;
+  left: 14px;
+}
+.scenery-cloud--a::after {
+  width: 40px;
+  height: 40px;
+  top: -18px;
+  left: 64px;
+}
+
+.scenery-cloud--b {
+  top: 20%;
+  left: -40%;
+  width: 90px;
+  height: 28px;
+  animation-duration: 42s;
+  animation-delay: -10s;
+}
+.scenery-cloud--b::before {
+  width: 42px;
+  height: 42px;
+  top: -20px;
+  left: 10px;
+}
+.scenery-cloud--b::after {
+  width: 30px;
+  height: 30px;
+  top: -12px;
+  left: 48px;
+}
+
+.scenery-cloud--c {
+  top: 6%;
+  left: -50%;
+  width: 70px;
+  height: 22px;
+  animation-duration: 50s;
+  animation-delay: -25s;
+}
+.scenery-cloud--c::before {
+  width: 32px;
+  height: 32px;
+  top: -16px;
+  left: 8px;
+}
+.scenery-cloud--c::after {
+  width: 24px;
+  height: 24px;
+  top: -10px;
+  left: 36px;
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(260vw);
+  }
+}
+
+.scenery-tree {
+  position: absolute;
+  top: 2%;
+  width: 90px;
+  height: 140px;
+  opacity: 0.9;
+}
+
+.scenery-tree--left {
+  left: -18px;
+}
+
+.scenery-tree--right {
+  right: -18px;
+}
+
+.scenery-tree-foliage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--grass-light);
+  box-shadow:
+    30px 14px 0 -6px var(--grass-dark),
+    -14px 20px 0 -10px var(--grass-light);
+}
+
+.scenery-tree-trunk {
+  position: absolute;
+  top: 70px;
+  left: 38px;
+  width: 14px;
+  height: 46px;
+  background: #a9683a;
+  border-radius: 6px;
+}
+
+.scenery-path {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46%;
+  height: 11%;
+  min-height: 64px;
+  background: #f0d9a8;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  opacity: 0.55;
+}
+
+.scenery-hill--back {
+  position: absolute;
+  bottom: 9%;
+  left: -10%;
+  width: 120%;
+  height: 90px;
+  background: var(--grass-light);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  opacity: 0.65;
+}
+
+.scenery-grass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 11%;
+  min-height: 64px;
+  background: var(--grass-dark);
+  border-radius: 40% 40% 0 0 / 18% 18% 0 0;
+}
+
+.scenery-flower {
+  position: absolute;
+  bottom: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: sway 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.scenery-flower-head {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow:
+    8px 0 0 -2px currentColor,
+    -8px 0 0 -2px currentColor;
+}
+
+.scenery-flower-stem {
+  width: 4px;
+  height: 22px;
+  background: #3f9142;
+  border-radius: 2px;
+  margin-top: -2px;
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scenery-cloud,
+  .scenery-flower {
+    animation: none;
+  }
+}

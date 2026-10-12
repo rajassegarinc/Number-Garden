@@ -1,0 +1,33 @@
+.audio-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #2fa4e7;
+  border-radius: 50%;
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.audio-button--md {
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+}
+
+.audio-button--lg {
+  width: 56px;
+  height: 56px;
+  padding: 13px;
+}
+
+.audio-button:active:not(:disabled) {
+  transform: scale(0.9);
+  box-shadow: var(--shadow-press);
+}
+
+.audio-button:disabled {
+  color: #a9b4c0;
+  opacity: 0.7;
+}

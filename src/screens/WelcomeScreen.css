@@ -1,0 +1,83 @@
+.welcome-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 32px 24px;
+}
+
+.welcome-title {
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.welcome-sub {
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.welcome-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 10px;
+}
+
+.welcome-input {
+  width: 100%;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  color: var(--ink);
+  background: #ffffff;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  padding: 14px 20px;
+  box-shadow: var(--shadow-soft);
+}
+
+.welcome-input:focus-visible {
+  border-color: var(--color-blue-accent);
+  outline: none;
+}
+
+.welcome-input[aria-invalid='true'] {
+  border-color: #e2564f;
+}
+
+.welcome-error {
+  color: #c43a33;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.welcome-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 999px;
+  background: var(--color-blue-accent);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease;
+}
+
+.welcome-btn:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 360px) {
+  .welcome-title {
+    font-size: 22px;
+  }
+}

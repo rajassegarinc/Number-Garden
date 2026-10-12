@@ -1,0 +1,142 @@
+.parent-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 16px 24px;
+}
+
+.parent-settings-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.parent-settings-back {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.parent-settings-title {
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.parent-settings-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.parent-settings-card-title {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.parent-settings-hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.parent-settings-name-form {
+  display: flex;
+  gap: 8px;
+}
+
+.parent-settings-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 10px 16px;
+}
+
+.parent-settings-input:focus-visible {
+  border-color: var(--color-blue-accent);
+  outline: none;
+}
+
+.parent-settings-save-btn {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--color-blue-accent);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.parent-settings-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.parent-settings-step-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-blue-bg);
+  color: var(--ink);
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.parent-settings-step-btn:active {
+  transform: scale(0.9);
+}
+
+.parent-settings-step-btn:disabled {
+  opacity: 0.4;
+}
+
+.parent-settings-step-value {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--ink);
+  min-width: 56px;
+  text-align: center;
+}
+
+.parent-settings-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.parent-settings-option {
+  flex: 1;
+  min-width: 56px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 800;
+  box-shadow: var(--shadow-soft);
+}
+
+.parent-settings-option--active {
+  background: var(--color-blue-accent);
+  color: #ffffff;
+}
