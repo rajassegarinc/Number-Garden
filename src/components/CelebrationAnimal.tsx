@@ -362,9 +362,15 @@ export const CelebrationAnimal = ({
             <ellipse cx="50" cy="54" rx="8" ry="10" fill="#7c8591" />
             <ellipse cx="110" cy="54" rx="8" ry="10" fill="#7c8591" />
             <ellipse cx="80" cy="96" rx="24" ry="16" fill="#aab3bd" />
-            <path d="M80 100 L70 76 L90 86 Z" fill="#e8e4da" stroke="#c9cdd4" strokeWidth="1.5" strokeLinejoin="round" />
             <ellipse cx="124" cy="112" rx="13" ry="23" fill="#9aa3ad" transform="rotate(18 124 112)" />
             <Face eyeSpacing={16} />
+            <path
+              d="M80 94 L68 54 L94 66 Z"
+              fill="#f0e6c8"
+              stroke="#b89a5c"
+              strokeWidth="2.2"
+              strokeLinejoin="round"
+            />
           </>
         )}
 
