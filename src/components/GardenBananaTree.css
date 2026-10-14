@@ -1,0 +1,33 @@
+.garden-banana-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-lg);
+  padding: 10px 10px 6px;
+  box-shadow: var(--shadow-soft);
+}
+
+.garden-banana-tree-label {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* This widget lives inside a scrolling hub screen, not a full-height game
+ * screen, so the generic CollectQuest field is given a much shorter, fixed
+ * play area here instead of its usual flex-fill layout. */
+.garden-banana-tree .collect-quest {
+  min-height: 0;
+}
+
+.garden-banana-tree .collect-quest-field {
+  flex: none;
+  min-height: 170px;
+}
+
+.garden-banana-tree .collect-quest-dock {
+  min-height: 72px;
+}

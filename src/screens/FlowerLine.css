@@ -1,0 +1,393 @@
+.flower-line {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  position: relative;
+}
+
+/* Gate / offer / transition screens */
+
+.flower-line-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.flower-line-gate-text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--ink);
+  max-width: 320px;
+}
+
+.flower-line-gate-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.flower-line-gate-btn {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 18px;
+  color: #ffffff;
+  background: var(--color-green-accent);
+  padding: 18px 28px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  min-height: 60px;
+  transition: transform 0.12s ease;
+}
+
+.flower-line-gate-btn:active {
+  transform: scale(0.96);
+}
+
+.flower-line-gate-btn--secondary {
+  background: var(--color-blue-accent);
+}
+
+/* Prompt banner */
+
+.flower-line-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--cream);
+  margin: 12px 16px 0;
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Pot row (number line) */
+
+.flower-pot-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 18px 16px 10px;
+}
+
+.flower-pot {
+  position: relative;
+  min-height: 64px;
+  border-radius: var(--radius-sm) var(--radius-sm) 6px 6px;
+  background: linear-gradient(180deg, #e8c48a 0%, #c98f4c 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.12);
+}
+
+.flower-pot-soil {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  right: 6px;
+  height: 8px;
+  border-radius: 6px;
+  background: rgba(90, 58, 24, 0.35);
+}
+
+.flower-pot-outline {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.55);
+}
+
+.flower-pot-flower {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.flower-pot-number {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 13px;
+  color: #ffffff;
+  background: rgba(47, 58, 74, 0.35);
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-top: 2px;
+}
+
+.flower-pot--next {
+  box-shadow: 0 0 0 3px var(--color-yellow-accent), inset 0 -4px 6px rgba(0, 0, 0, 0.12);
+  animation: flower-pot-pulse 1.4s ease-in-out infinite;
+}
+
+.flower-pot--countalong {
+  box-shadow: 0 0 0 4px var(--color-green-accent);
+  animation: flower-pot-pulse 0.7s ease-in-out;
+}
+
+@keyframes flower-pot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* Card tray */
+
+.flower-card-tray {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 10px 16px 100px;
+}
+
+.flower-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 72px;
+  padding: 10px 4px;
+  background: var(--color-pink-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.12s ease, opacity 0.25s ease;
+}
+
+.flower-card:active {
+  transform: scale(0.95);
+}
+
+.flower-card-number {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.flower-card--dimmed {
+  opacity: 0.35;
+}
+
+.flower-card--glow {
+  box-shadow: 0 0 0 3px var(--color-yellow-accent), var(--shadow-soft);
+  animation: flower-card-glow 1s ease-in-out infinite;
+}
+
+@keyframes flower-card-glow {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.flower-card--shake {
+  animation: flower-card-shake 0.4s ease;
+}
+
+@keyframes flower-card-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+/* Overlays (comparison + counting demo) */
+
+.flower-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(47, 58, 74, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 30;
+}
+
+.flower-overlay-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.flower-compare,
+.flower-demo {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: var(--shadow-soft);
+}
+
+.flower-compare-cards,
+.flower-demo-cards {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.flower-compare-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  min-height: 100px;
+  padding: 14px 10px;
+  background: var(--color-blue-bg);
+  border-radius: var(--radius-md);
+  opacity: 0.75;
+}
+
+.flower-compare-card--active {
+  opacity: 1;
+  box-shadow: 0 0 0 3px var(--color-green-accent);
+}
+
+.flower-compare-card--active:active {
+  transform: scale(0.96);
+}
+
+.flower-demo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  padding: 14px 10px;
+  background: var(--color-blue-bg);
+  border-radius: var(--radius-md);
+}
+
+.flower-demo-conclusion {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-green-accent);
+  margin-top: 16px;
+}
+
+/* Grown-ups trigger + panel */
+
+.flower-grownups-trigger {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0.6;
+}
+
+.flower-grownups-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(47, 58, 74, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 40;
+}
+
+.flower-grownups-panel {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  max-width: 360px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-soft);
+}
+
+.flower-grownups-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.flower-grownups-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-pink-bg);
+  font-size: 16px;
+}
+
+.flower-grownups-empty {
+  color: var(--ink-soft);
+}
+
+.flower-grownups-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flower-grownups-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--color-green-bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.flower-grownups-when {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.flower-grownups-pct {
+  color: var(--ink);
+}
+
+.flower-grownups-hard {
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flower-pot--next,
+  .flower-pot--countalong,
+  .flower-card--glow,
+  .flower-card--shake {
+    animation: none;
+  }
+}

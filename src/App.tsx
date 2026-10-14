@@ -6,19 +6,34 @@ import { HomeScreen } from './screens/HomeScreen';
 import { GameScreen } from './screens/GameScreen';
 import { MatchingRound } from './screens/MatchingRound';
 import { OrderingGame } from './screens/OrderingGame';
+import { FlowerLine } from './screens/FlowerLine';
+import { CaterpillarTrail } from './screens/CaterpillarTrail';
 import { NumberLineAdventure } from './screens/NumberLineAdventure';
 import { SuccessScreen } from './screens/SuccessScreen';
 import { ParentDashboard } from './screens/ParentDashboard';
 import { ParentSettings } from './screens/ParentSettings';
+import { AdventureMap } from './screens/AdventureMap';
+import { AdventuresScreen } from './screens/adventures/AdventuresScreen';
+import { BananaMission } from './screens/missions/BananaMission';
+import { RiverMission } from './screens/missions/RiverMission';
+import { EggMission } from './screens/missions/EggMission';
+import { GardenHub } from './screens/GardenHub';
+import { MarketMission } from './screens/MarketMission';
 import { useProgress } from './hooks/useProgress';
 import { getActivity, getEffectiveLevelCount } from './data/activities';
-import type { ActivityId, LevelResult, Screen } from './types';
+import type { ActivityId, LevelResult, MissionId, Screen } from './types';
 import './App.css';
 
 function App() {
   const {
     progress,
     recordLevelResult,
+    recordMissionResult,
+    addSeeds,
+    plantSeed,
+    waterPlot,
+    placeDecoration,
+    clearPlot,
     toggleSound,
     resetProgress,
     setMaxNumber,
@@ -28,17 +43,39 @@ function App() {
   } = useProgress();
   const [screen, setScreen] = useState<Screen>('home');
   const [activeActivity, setActiveActivity] = useState<ActivityId | null>(null);
+  const [activeMission, setActiveMission] = useState<MissionId | null>(null);
   const [lastResult, setLastResult] = useState<LevelResult | null>(null);
 
   const goHome = () => {
     setScreen('home');
     setActiveActivity(null);
+    setActiveMission(null);
     setLastResult(null);
+  };
+
+  const goToAdventureMap = () => {
+    setScreen('adventure');
+    setActiveMission(null);
+  };
+
+  const goToGarden = () => {
+    setScreen('garden');
+    setActiveMission(null);
+  };
+
+  const goToAdventures = () => {
+    setScreen('adventures');
+    setActiveMission(null);
   };
 
   const handleSelectActivity = (id: ActivityId) => {
     setActiveActivity(id);
     setScreen('game');
+  };
+
+  const handleSelectMission = (id: MissionId) => {
+    setActiveMission(id);
+    setScreen('mission');
   };
 
   const handleLevelComplete = (result: LevelResult) => {
@@ -80,12 +117,82 @@ function App() {
   return (
     <div className="app-shell">
       <Scenery />
-      <main className={`app-content ${screen !== 'game' ? 'app-content--with-nav' : ''}`}>
+      <main className={`app-content ${screen !== 'game' && screen !== 'mission' && screen !== 'market' && screen !== 'adventures' ? 'app-content--with-nav' : ''}`}>
         {screen === 'home' && (
           <HomeScreen
             progress={progress}
             onSelectActivity={handleSelectActivity}
             onOpenSettings={() => setScreen('settings')}
+            onOpenAdventure={goToAdventureMap}
+            onOpenGarden={goToGarden}
+            onOpenWorlds={goToAdventures}
+          />
+        )}
+
+        {screen === 'adventures' && <AdventuresScreen onBack={goHome} />}
+
+        {screen === 'adventure' && (
+          <AdventureMap progress={progress} onSelectMission={handleSelectMission} onBack={goHome} />
+        )}
+
+        {screen === 'garden' && (
+          <GardenHub
+            seeds={progress.garden.seeds}
+            plots={progress.garden.plots}
+            totalStars={progress.totalStars}
+            soundOn={progress.soundOn}
+            onBack={goHome}
+            onOpenMarket={() => setScreen('market')}
+            addSeeds={addSeeds}
+            plantSeed={plantSeed}
+            waterPlot={waterPlot}
+            placeDecoration={placeDecoration}
+            clearPlot={clearPlot}
+          />
+        )}
+
+        {screen === 'market' && (
+          <MarketMission
+            settings={settings}
+            soundOn={progress.soundOn}
+            childName={progress.childName}
+            onExit={goToGarden}
+            onComplete={() => addSeeds(1)}
+          />
+        )}
+
+        {screen === 'mission' && activeMission === 'banana' && (
+          <BananaMission
+            settings={settings}
+            soundOn={progress.soundOn}
+            childName={progress.childName}
+            onExit={goToAdventureMap}
+            recordMissionResult={recordMissionResult}
+          />
+        )}
+
+        {screen === 'mission' && activeMission === 'eggs' && (
+          <EggMission
+            settings={settings}
+            soundOn={progress.soundOn}
+            childName={progress.childName}
+            onExit={goToAdventureMap}
+            recordMissionResult={recordMissionResult}
+          />
+        )}
+
+        {screen === 'mission' && activeMission === 'river' && (
+          <RiverMission
+            level={Math.min(
+              progress.activities['number-line'].level,
+              getEffectiveLevelCount('number-line', getActivity('number-line')?.levelCount ?? 10, settings),
+            )}
+            settings={settings}
+            soundOn={progress.soundOn}
+            childName={progress.childName}
+            onExit={goToAdventureMap}
+            recordLevelResult={recordLevelResult}
+            recordMissionResult={recordMissionResult}
           />
         )}
 
@@ -104,6 +211,32 @@ function App() {
 
         {screen === 'game' && activeActivity && activeMeta?.mode === 'order' && (
           <OrderingGame
+            key={`${activeActivity}-${activeLevel}-${lastResult?.correct ?? 'start'}`}
+            activityId={activeActivity}
+            level={activeLevel}
+            soundOn={progress.soundOn}
+            settings={settings}
+            childName={progress.childName}
+            onExit={goHome}
+            onLevelComplete={handleLevelComplete}
+          />
+        )}
+
+        {screen === 'game' && activeActivity && activeMeta?.mode === 'flowerline' && (
+          <FlowerLine
+            key={`${activeActivity}-${activeLevel}-${lastResult?.correct ?? 'start'}`}
+            activityId={activeActivity}
+            level={activeLevel}
+            soundOn={progress.soundOn}
+            settings={settings}
+            childName={progress.childName}
+            onExit={goHome}
+            onLevelComplete={handleLevelComplete}
+          />
+        )}
+
+        {screen === 'game' && activeActivity && activeMeta?.mode === 'caterpillar' && (
+          <CaterpillarTrail
             key={`${activeActivity}-${activeLevel}-${lastResult?.correct ?? 'start'}`}
             activityId={activeActivity}
             level={activeLevel}
@@ -170,7 +303,7 @@ function App() {
         )}
       </main>
 
-      {screen !== 'game' && (
+      {screen !== 'game' && screen !== 'mission' && screen !== 'market' && screen !== 'adventures' && (
         <div className="app-nav">
           <BottomNavigation
             screen={screen}

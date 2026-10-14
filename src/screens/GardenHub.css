@@ -1,0 +1,115 @@
+.garden-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 16px 12px;
+}
+
+.garden-hub-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.garden-hub-back {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease;
+}
+
+.garden-hub-back:active {
+  transform: scale(0.9);
+}
+
+.garden-hub-title {
+  flex: 1;
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.garden-hub-seeds {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 15px;
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+}
+
+.garden-hub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.garden-hub-heading {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 0 2px;
+}
+
+.garden-hub-need-seeds {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #c9972f;
+  background: #fff6cf;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.garden-hub-market {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #ffb3d9, #ffe58a);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.garden-hub-market:active {
+  transform: scale(0.98);
+}
+
+.garden-hub-market-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.garden-hub-market-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.garden-hub-market-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.garden-hub-market-sub {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #6b4a1f;
+}
+
+.garden-hub-market-chevron {
+  flex-shrink: 0;
+  color: var(--ink);
+}

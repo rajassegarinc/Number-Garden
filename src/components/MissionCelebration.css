@@ -1,0 +1,121 @@
+.mission-celebration {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 20px 24px;
+  text-align: center;
+  min-height: 100%;
+}
+
+.mission-celebration > *:not(.celebration-effects) {
+  position: relative;
+  z-index: 1;
+}
+
+.mission-celebration-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffe58a;
+  border: 4px solid #4caf50;
+  border-radius: 999px;
+  padding: 10px 24px;
+  box-shadow: var(--shadow-soft);
+  animation: mission-banner-in 0.5s ease;
+}
+
+.mission-celebration-text {
+  font-size: 24px;
+  color: #2f6b2d;
+}
+
+.mission-celebration-sparkle {
+  color: #ff8fc0;
+  font-size: 20px;
+  animation: mission-sparkle-spin 2s linear infinite;
+}
+
+@keyframes mission-sparkle-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes mission-banner-in {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mission-celebration-message {
+  font-size: 17px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: var(--ink);
+  max-width: 320px;
+}
+
+.mission-celebration-animals {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  min-height: 150px;
+}
+
+.mission-celebration-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: auto;
+}
+
+.mission-celebration-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 18px;
+  padding: 16px 20px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.12s ease;
+}
+
+.mission-celebration-btn:active {
+  transform: scale(0.96);
+}
+
+.mission-celebration-btn--primary {
+  background: linear-gradient(180deg, #7bd97e, #4caf50);
+  color: #ffffff;
+}
+
+.mission-celebration-btn--secondary {
+  background: #ffffff;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-celebration-banner,
+  .mission-celebration-sparkle {
+    animation: none;
+  }
+}

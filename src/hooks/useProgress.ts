@@ -9,7 +9,9 @@ import {
   MAX_NUMBER_STEP,
   getEffectiveLevelCount,
 } from '../data/activities';
-import type { ActivityId, LevelResult, ProgressState } from '../types';
+import { MISSIONS } from '../data/missions';
+import { GARDEN_PLOT_COUNT } from '../data/decorations';
+import type { ActivityId, DecorationId, GardenPlotState, LevelResult, MissionId, ProgressState } from '../types';
 
 // v3: child name + configurable settings (maxNumber, maxAdditionTotal) added,
 // decade bands extended from 5 to 10 (1-100) so bandStats grew — bump the key
@@ -31,6 +33,16 @@ const createDefaultProgress = (): ProgressState => {
     return acc;
   }, {} as ProgressState['activities']);
 
+  const missions = MISSIONS.reduce((acc, mission) => {
+    acc[mission.id] = { completed: false, starsEarned: 0, timesPlayed: 0 };
+    return acc;
+  }, {} as ProgressState['missions']);
+
+  const garden: ProgressState['garden'] = {
+    seeds: 2,
+    plots: Array.from({ length: GARDEN_PLOT_COUNT }, () => ({ kind: 'empty' })),
+  };
+
   return {
     totalStars: 0,
     soundOn: true,
@@ -40,7 +52,18 @@ const createDefaultProgress = (): ProgressState => {
     maxAdditionTotal: DEFAULT_SETTINGS.maxAdditionTotal,
     wordMatchMaxNumber: DEFAULT_SETTINGS.wordMatchMaxNumber,
     activities,
+    missions,
+    garden,
   };
+};
+
+const isValidPlot = (value: unknown): value is GardenPlotState => {
+  if (!value || typeof value !== 'object') return false;
+  const kind = (value as { kind?: unknown }).kind;
+  if (kind === 'empty') return true;
+  if (kind === 'plant') return ['seed', 'sprout', 'bloom'].includes((value as { stage?: unknown }).stage as string);
+  if (kind === 'decoration') return typeof (value as { id?: unknown }).id === 'string';
+  return false;
 };
 
 const isValidMaxNumber = (value: unknown): value is number =>
@@ -72,6 +95,23 @@ const loadProgress = (): ProgressState => {
             : defaults.activities[id].bandStats,
       };
     }
+    const missions = { ...defaults.missions };
+    for (const id of Object.keys(defaults.missions) as MissionId[]) {
+      const incoming = parsed.missions?.[id];
+      if (!incoming) continue;
+      missions[id] = { ...defaults.missions[id], ...incoming };
+    }
+    const incomingPlots = parsed.garden?.plots;
+    const plots =
+      Array.isArray(incomingPlots) && incomingPlots.length === GARDEN_PLOT_COUNT && incomingPlots.every(isValidPlot)
+        ? incomingPlots
+        : defaults.garden.plots;
+    const seeds =
+      typeof parsed.garden?.seeds === 'number' && parsed.garden.seeds >= 0
+        ? parsed.garden.seeds
+        : defaults.garden.seeds;
+    const garden: ProgressState['garden'] = { seeds, plots };
+
     const maxNumber = isValidMaxNumber(parsed.maxNumber) ? parsed.maxNumber : defaults.maxNumber;
     const maxAdditionTotal = isValidMaxAdditionTotal(parsed.maxAdditionTotal)
       ? parsed.maxAdditionTotal
@@ -83,7 +123,17 @@ const loadProgress = (): ProgressState => {
       typeof parsed.childName === 'string' && parsed.childName.trim().length > 0
         ? parsed.childName.trim()
         : null;
-    return { ...defaults, ...parsed, activities, maxNumber, maxAdditionTotal, wordMatchMaxNumber, childName };
+    return {
+      ...defaults,
+      ...parsed,
+      activities,
+      missions,
+      garden,
+      maxNumber,
+      maxAdditionTotal,
+      wordMatchMaxNumber,
+      childName,
+    };
   } catch {
     return createDefaultProgress();
   }
@@ -166,6 +216,70 @@ export const useProgress = () => {
     });
   }, []);
 
+  const recordMissionResult = useCallback((missionId: MissionId, starsEarned: number) => {
+    setProgress((prev) => {
+      const current = prev.missions[missionId];
+      return {
+        ...prev,
+        totalStars: prev.totalStars + starsEarned,
+        lastPlayedAt: new Date().toISOString(),
+        garden: { ...prev.garden, seeds: prev.garden.seeds + 1 },
+        missions: {
+          ...prev.missions,
+          [missionId]: {
+            completed: true,
+            starsEarned: current.starsEarned + starsEarned,
+            timesPlayed: current.timesPlayed + 1,
+          },
+        },
+      };
+    });
+  }, []);
+
+  const addSeeds = useCallback((count: number) => {
+    setProgress((prev) => ({ ...prev, garden: { ...prev.garden, seeds: prev.garden.seeds + count } }));
+  }, []);
+
+  const updatePlot = useCallback((index: number, next: GardenPlotState) => {
+    setProgress((prev) => {
+      if (index < 0 || index >= prev.garden.plots.length) return prev;
+      const plots = prev.garden.plots.map((plot, i) => (i === index ? next : plot));
+      return { ...prev, garden: { ...prev.garden, plots } };
+    });
+  }, []);
+
+  const plantSeed = useCallback(
+    (index: number) => {
+      setProgress((prev) => {
+        if (prev.garden.seeds <= 0) return prev;
+        if (prev.garden.plots[index]?.kind !== 'empty') return prev;
+        const plots = prev.garden.plots.map((plot, i) =>
+          i === index ? ({ kind: 'plant', stage: 'seed' } as const) : plot,
+        );
+        return { ...prev, garden: { ...prev.garden, seeds: prev.garden.seeds - 1, plots } };
+      });
+    },
+    [],
+  );
+
+  const waterPlot = useCallback((index: number) => {
+    setProgress((prev) => {
+      const plot = prev.garden.plots[index];
+      if (!plot || plot.kind !== 'plant' || plot.stage === 'bloom') return prev;
+      const nextStage = plot.stage === 'seed' ? 'sprout' : 'bloom';
+      const plots = prev.garden.plots.map((p, i) => (i === index ? ({ kind: 'plant', stage: nextStage } as const) : p));
+      return { ...prev, garden: { ...prev.garden, plots } };
+    });
+  }, []);
+
+  const placeDecoration = useCallback((index: number, decorationId: DecorationId) => {
+    updatePlot(index, { kind: 'decoration', id: decorationId });
+  }, [updatePlot]);
+
+  const clearPlot = useCallback((index: number) => {
+    updatePlot(index, { kind: 'empty' });
+  }, [updatePlot]);
+
   const resetProgress = useCallback(() => {
     setProgress(createDefaultProgress());
   }, []);
@@ -178,6 +292,12 @@ export const useProgress = () => {
   return {
     progress,
     recordLevelResult,
+    recordMissionResult,
+    addSeeds,
+    plantSeed,
+    waterPlot,
+    placeDecoration,
+    clearPlot,
     toggleSound,
     resetProgress,
     getActivityProgress,

@@ -1,6 +1,6 @@
-type AudioContextCtor = typeof AudioContext;
+export type AudioContextCtor = typeof AudioContext;
 
-const getAudioContextCtor = (): AudioContextCtor | undefined => {
+export const getAudioContextCtor = (): AudioContextCtor | undefined => {
   if (typeof window === 'undefined') return undefined;
   return window.AudioContext ?? (window as unknown as { webkitAudioContext?: AudioContextCtor }).webkitAudioContext;
 };

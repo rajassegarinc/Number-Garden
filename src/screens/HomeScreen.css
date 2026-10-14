@@ -87,6 +87,153 @@
   font-size: 14px;
 }
 
+.home-adventure-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #ffe58a, #ffb3d9);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.home-adventure-banner:active {
+  transform: scale(0.98);
+}
+
+.home-adventure-animals {
+  display: flex;
+  flex-shrink: 0;
+  margin-right: -14px;
+}
+
+.home-adventure-animals > * {
+  margin-right: -14px;
+  filter: drop-shadow(0 2px 3px rgba(47, 58, 74, 0.2));
+}
+
+.home-adventure-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-adventure-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.home-adventure-sub {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #6b4a1f;
+}
+
+.home-adventure-chevron {
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.home-garden-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-green-bg), var(--color-blue-bg));
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.home-garden-banner:active {
+  transform: scale(0.98);
+}
+
+.home-garden-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.home-garden-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-garden-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.home-garden-sub {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.home-garden-chevron {
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.home-world-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-purple-bg), var(--color-yellow-bg));
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.home-world-banner:active {
+  transform: scale(0.98);
+}
+
+.home-world-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.home-world-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-world-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.home-world-sub {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.home-world-chevron {
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
 .home-activity-list {
   display: flex;
   flex-direction: column;

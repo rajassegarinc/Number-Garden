@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { getActivity, getEffectiveLevelCount, resolveBand } from '../data/activities';
 import { generateNumberLineQuestion, getNumberLineStimulus } from '../data/numberLineGenerator';
 import type { NumberLineQuestion } from '../data/numberLineGenerator';
 import { ANIMAL_SPECS } from '../data/celebrationAnimals';
+import type { AnimalKind } from '../data/celebrationAnimals';
 import { pickGuideAnimal } from '../data/celebrationSelector';
 import { GameHeader } from '../components/GameHeader';
 import { NumberLineTrack } from '../components/NumberLineTrack';
@@ -19,6 +21,17 @@ interface NumberLineAdventureProps {
   childName?: string | null;
   onExit: () => void;
   onLevelComplete: (result: LevelResult) => void;
+  /** Overrides the random guide-animal rotation — used by RiverMission to
+   * always show the baby elephant instead of a random species. */
+  forcedGuide?: AnimalKind;
+  /** Rendered between the header and the question body — used by
+   * RiverMission to layer its own persistent river-crossing progress strip
+   * on top of this engine without duplicating the question/answer logic. */
+  topSlot?: ReactNode;
+  /** Fired once per answered question (right as the answer is revealed,
+   * regardless of correct/incorrect) with how many of the total have now
+   * been answered — lets a themed wrapper track overall mission progress. */
+  onProgress?: (answered: number, total: number) => void;
 }
 
 const FEEDBACK_DELAY_MS = 1100;
@@ -35,6 +48,9 @@ export const NumberLineAdventure = ({
   childName,
   onExit,
   onLevelComplete,
+  forcedGuide,
+  topSlot,
+  onProgress,
 }: NumberLineAdventureProps) => {
   const activity = getActivity(activityId);
   const totalQuestions = activity?.questionsPerLevel ?? 6;
@@ -63,7 +79,7 @@ export const NumberLineAdventure = ({
   // Picked once per mount (i.e. once per round/session, same pattern as the
   // victory-screen lineup) and kept stable — rotates the next time this
   // activity is entered, never mid-question.
-  const [guide] = useState(() => pickGuideAnimal());
+  const [guide] = useState(() => forcedGuide ?? pickGuideAnimal());
   const guideName = `the ${ANIMAL_SPECS[guide].name}`;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hopTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -115,6 +131,7 @@ export const NumberLineAdventure = ({
     setSelectedValue(value);
     setRevealed(true);
     const correct = value === question.correct;
+    onProgress?.(questionIndex + 1, totalQuestions);
 
     if (question.type === 'jump' && question.startValue !== undefined) {
       animateHop(question.startValue, question.correct);
@@ -172,6 +189,8 @@ export const NumberLineAdventure = ({
         speechSupported={supported}
         childName={childName}
       />
+
+      {topSlot}
 
       <div className="number-line-body">
         <button

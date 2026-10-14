@@ -76,6 +76,21 @@ const pickUniqueBatch = (min: number, max: number, count: number, excluded: Set<
   return result;
 };
 
+/** Splits `sum` into two addends, biased toward roughly even halves so
+ * neither picture group balloons to an unwieldy size at higher totals (e.g.
+ * never 1 + 19 for a sum of 20) — keeps both groups legible on a phone
+ * screen. Shared by Picture Addition and Little Market so both teach the
+ * same "parts make the whole" split rather than two different ones. */
+export const splitAddends = (sum: number): [number, number] => {
+  const half = Math.floor(sum / 2);
+  const spread = Math.min(2, Math.max(0, half - 1));
+  const addLow = Math.max(1, half - spread);
+  const addHigh = Math.min(sum - 1, half + spread);
+  const addend1 = randomInt(addLow, addHigh);
+  const addend2 = sum - addend1;
+  return [addend1, addend2];
+};
+
 const pickDistractors = (
   correct: number,
   min: number,
@@ -217,15 +232,7 @@ const generateByType = (
     }
     case 'picture-addition': {
       const sum = pickUnique(min, max, excludedStimuli);
-      // Bias the split toward roughly even halves so neither picture group
-      // balloons to an unwieldy size at higher totals (e.g. never 1 + 19
-      // for a sum of 20) — keeps both groups legible on a phone screen.
-      const half = Math.floor(sum / 2);
-      const spread = Math.min(2, Math.max(0, half - 1));
-      const addLow = Math.max(1, half - spread);
-      const addHigh = Math.min(sum - 1, half + spread);
-      const addend1 = randomInt(addLow, addHigh);
-      const addend2 = sum - addend1;
+      const [addend1, addend2] = splitAddends(sum);
       const icon = ADDITION_ICONS[randomInt(0, ADDITION_ICONS.length - 1)];
       return {
         id: `${activityId}-${sum}-${Date.now()}-${Math.random()}`,

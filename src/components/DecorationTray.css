@@ -1,0 +1,66 @@
+.decoration-tray {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-soft);
+}
+
+.decoration-tray-label {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.decoration-tray-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.decoration-tray-empty {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.decoration-chip {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #ffffff;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.12s ease, outline 0.12s ease;
+}
+
+.decoration-chip:active {
+  transform: scale(0.92);
+}
+
+.decoration-chip--held {
+  outline: 3px solid #4caf50;
+  transform: scale(1.08);
+}
+
+.decoration-chip--locked {
+  background: #e4e9ee;
+  color: #9aa6b3;
+  flex-direction: column;
+  gap: 0;
+  font-size: 18px;
+}
+
+.decoration-chip-req {
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+}

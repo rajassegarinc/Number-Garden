@@ -31,6 +31,8 @@ export const OrderingGame = ({
   const activity = getActivity(activityId);
   const orderSize = activity?.orderSize ?? 4;
   const totalRounds = activity?.questionsPerLevel ?? 5;
+  const direction = activity?.orderDirection ?? 'asc';
+  const isDesc = direction === 'desc';
   const { speak, supported } = useSpeech(soundOn);
 
   // Stable Set held in state (never replaced) since it's read during the
@@ -49,11 +51,16 @@ export const OrderingGame = ({
   const [roundComplete, setRoundComplete] = useState(false);
 
   const critter = useMemo(() => CRITTER_ORDER[(level - 1) % CRITTER_ORDER.length], [level]);
-  const sortedAsc = useMemo(() => [...values].sort((a, b) => a - b), [values]);
-  const expectedValue = sortedAsc[selected.length];
+  const sortedTarget = useMemo(
+    () => [...values].sort((a, b) => (isDesc ? b - a : a - b)),
+    [values, isDesc],
+  );
+  const expectedValue = sortedTarget[selected.length];
+  const promptText = isDesc ? 'Tap the numbers from largest to smallest' : 'Tap the numbers from smallest to largest';
+  const nextHint = isDesc ? 'Try the biggest number left!' : 'Try the smallest number left!';
 
   useEffect(() => {
-    speak('Tap the numbers from smallest to largest');
+    speak(promptText);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
@@ -108,7 +115,7 @@ export const OrderingGame = ({
     } else {
       hadMistakeRef.current = true;
       setWrongValue(value);
-      speak('Try the smallest number left!');
+      speak(nextHint);
       setTimeout(() => setWrongValue(null), 480);
     }
   };
@@ -122,13 +129,13 @@ export const OrderingGame = ({
         current={roundIndex + 1}
         total={totalRounds}
         onBack={onExit}
-        onHearPrompt={() => speak('Tap the numbers from smallest to largest')}
+        onHearPrompt={() => speak(promptText)}
         speechSupported={supported}
         childName={childName}
       />
 
       <div className="ordering-game-body">
-        <p className="ordering-game-prompt">Tap the numbers from smallest to largest</p>
+        <p className="ordering-game-prompt">{promptText}</p>
 
         <div className="ordering-game-chips">
           {values.map((value) => {

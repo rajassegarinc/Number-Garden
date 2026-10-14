@@ -1,0 +1,62 @@
+.monkey-friend {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
+}
+
+.monkey-friend:active {
+  transform: scale(0.94);
+}
+
+.monkey-friend--reacting {
+  animation: monkey-friend-wiggle 0.5s ease;
+}
+
+@keyframes monkey-friend-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+.monkey-friend-bubble {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  white-space: nowrap;
+  animation: monkey-friend-bubble-in 0.2s ease;
+}
+
+@keyframes monkey-friend-bubble-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monkey-friend--reacting {
+    animation: none;
+  }
+}

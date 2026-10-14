@@ -1,0 +1,33 @@
+.market-mission {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
+}
+
+.market-mission-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  padding: 4px 20px 0;
+}
+
+.market-mission-equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 24px;
+  padding: 6px 20px 0;
+}
+
+.market-mission-equation-op {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink);
+  margin: 0 4px;
+}

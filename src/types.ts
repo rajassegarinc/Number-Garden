@@ -7,10 +7,13 @@ export type ActivityId =
   | 'count-objects'
   | 'picture-addition'
   | 'number-ordering'
+  | 'number-ordering-desc'
+  | 'flower-line'
+  | 'caterpillar-trail'
   | 'number-line'
   | 'mixed-challenge';
 
-export type ActivityMode = 'choice' | 'match' | 'order' | 'numberline';
+export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline';
 
 export type CardColor = 'pink' | 'yellow' | 'purple' | 'blue' | 'green';
 
@@ -29,6 +32,8 @@ export interface ActivityMeta {
   pairsPerRound?: number;
   /** Numbers to order per round, only used by order mode. */
   orderSize?: number;
+  /** Sort direction for order mode — defaults to ascending when omitted. */
+  orderDirection?: 'asc' | 'desc';
 }
 
 export interface AnswerChoice {
@@ -77,6 +82,32 @@ export interface ActivityProgress {
 
 export type ProgressMap = Record<ActivityId, ActivityProgress>;
 
+export type MissionId = 'banana' | 'river' | 'eggs';
+
+export interface MissionProgress {
+  completed: boolean;
+  starsEarned: number;
+  timesPlayed: number;
+}
+
+export type MissionProgressMap = Record<MissionId, MissionProgress>;
+
+export type DecorationId = 'sunflower' | 'butterfly' | 'kite' | 'fountain' | 'tent';
+
+/** Each garden plot holds exactly one thing: nothing, a growing plant (which
+ * advances seed -> sprout -> bloom as the child "waters" it), or a placed
+ * decoration. Decorations are never consumed — once unlocked by stars they
+ * can be placed, removed and replaced freely, like a sticker set. */
+export type GardenPlotState =
+  | { kind: 'empty' }
+  | { kind: 'plant'; stage: 'seed' | 'sprout' | 'bloom' }
+  | { kind: 'decoration'; id: DecorationId };
+
+export interface GardenProgress {
+  seeds: number;
+  plots: GardenPlotState[];
+}
+
 export interface NumberSettings {
   /** The highest number the child should be challenged with right now (5-100, step 5). */
   maxNumber: number;
@@ -92,6 +123,8 @@ export interface ProgressState extends NumberSettings {
   lastPlayedAt: string | null;
   childName: string | null;
   activities: ProgressMap;
+  missions: MissionProgressMap;
+  garden: GardenProgress;
 }
 
 export interface LevelResult {
@@ -103,4 +136,15 @@ export interface LevelResult {
   leveledUp: boolean;
 }
 
-export type Screen = 'welcome' | 'home' | 'game' | 'success' | 'parent' | 'settings';
+export type Screen =
+  | 'welcome'
+  | 'home'
+  | 'game'
+  | 'success'
+  | 'parent'
+  | 'settings'
+  | 'adventure'
+  | 'mission'
+  | 'garden'
+  | 'market'
+  | 'adventures';

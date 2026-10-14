@@ -1,0 +1,39 @@
+.ten-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+
+.ten-frame-row {
+  display: flex;
+  gap: 3px;
+}
+
+.ten-frame-dot {
+  border-radius: 50%;
+  border: 1.6px solid rgba(47, 58, 74, 0.28);
+  background: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.ten-frame-dot--filled-a {
+  background: var(--color-green-accent);
+  border-color: var(--color-green-accent);
+}
+
+.ten-frame-dot--filled-b {
+  background: var(--color-pink-accent);
+  border-color: var(--color-pink-accent);
+}
+
+.ten-frame--sm .ten-frame-dot {
+  width: 9px;
+  height: 9px;
+}
+
+.ten-frame--lg .ten-frame-dot {
+  width: 15px;
+  height: 15px;
+  border-width: 2px;
+}

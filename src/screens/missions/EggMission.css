@@ -1,0 +1,30 @@
+.egg-mission {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
+  position: relative;
+}
+
+.egg-mission-prompt {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 20px 0;
+}
+
+.egg-mission-bird {
+  position: fixed;
+  left: 10px;
+  bottom: 16px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+@media (min-width: 540px) {
+  .egg-mission-bird {
+    left: 24px;
+  }
+}
