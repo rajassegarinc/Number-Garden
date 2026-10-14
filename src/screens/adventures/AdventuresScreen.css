@@ -4,3 +4,12 @@
   height: 100dvh;
   overflow: hidden;
 }
+
+/* Our global reset (src/index.css) sets `svg { max-width: 100% }`, which
+   clamps MagicalForest's deliberately oversized panorama SVG (sized to its
+   own width/height attributes for horizontal scroll-panning) down to the
+   narrow container width. That wrecks its preserveAspectRatio scaling and
+   squashes the whole scene into a thin strip. Undo the clamp here only. */
+.adventures-screen .mf-svg {
+  max-width: none;
+}
