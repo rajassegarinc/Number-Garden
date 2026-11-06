@@ -199,6 +199,19 @@
   transition: transform 0.12s ease;
 }
 
+.home-paths-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-green-bg), var(--color-blue-bg));
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.home-paths-banner:active,
 .home-world-banner:active {
   transform: scale(0.98);
 }

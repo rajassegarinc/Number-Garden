@@ -1,0 +1,95 @@
+.paths-trail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+/* The dotted trail line running behind the stop markers. */
+.paths-trail::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 20px;
+  bottom: 20px;
+  border-left: 4px dotted rgba(255, 255, 255, 0.9);
+}
+
+.paths-stop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.paths-stop-marker {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  z-index: 1;
+}
+
+.paths-stop--played .paths-stop-marker {
+  background: var(--grass-dark);
+  color: #ffffff;
+}
+
+.paths-stop--next .paths-stop-marker {
+  background: var(--color-yellow-accent);
+  animation: paths-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes paths-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 183, 3, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 183, 3, 0);
+  }
+}
+
+.paths-stop-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.paths-stop-card > .activity-card {
+  width: 100%;
+}
+
+.paths-side-title {
+  font-size: 18px;
+  color: var(--ink);
+  margin-top: 6px;
+}
+
+.paths-side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.paths-side-list .activity-card {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paths-stop--next .paths-stop-marker {
+    animation: none;
+  }
+}

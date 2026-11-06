@@ -152,7 +152,168 @@ export const ACTIVITIES: ActivityMeta[] = [
     levelCount: 1,
     questionsPerLevel: 8,
   },
+  // Learning paths — skill-based progressions shown on the Learning Paths
+  // map (in this suggested order) rather than the home activity list.
+  {
+    id: 'path-compare',
+    title: 'Hungry Crocodile',
+    shortTitle: 'Compare',
+    description: 'The crocodile always eats the bigger number',
+    color: 'green',
+    emoji: '🐊',
+    mode: 'path',
+    group: 'path',
+    levelCount: 3,
+    questionsPerLevel: 6,
+    levelLabels: ['Compare pictures', 'Numbers to 20', 'Numbers to 100'],
+  },
+  {
+    id: 'path-bonds',
+    title: 'Number Bonds Bridge',
+    shortTitle: 'Bonds',
+    description: 'Find the stones that make the whole',
+    color: 'blue',
+    emoji: '🧩',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Make 5', 'Make 10', 'Make 20', 'Pairs that make 10'],
+  },
+  {
+    id: 'path-subtraction',
+    title: 'Frog Pond Subtraction',
+    shortTitle: 'Subtract',
+    description: 'Some frogs hop away — how many are left?',
+    color: 'green',
+    emoji: '🐸',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Take away within 5', 'Take away within 10', 'Take away within 20', 'How many hopped?'],
+  },
+  {
+    id: 'path-place-value',
+    title: 'Bee Hive Place Value',
+    shortTitle: 'Place Value',
+    description: 'Nectar drops, honey bars and whole hives',
+    color: 'yellow',
+    emoji: '🐝',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Tens & ones to 30', 'Tens & ones to 99', 'Hundreds', 'Trading ten ones'],
+  },
+  {
+    id: 'path-patterns',
+    title: 'Flower Bed Patterns',
+    shortTitle: 'Patterns',
+    description: 'What comes next in the pattern?',
+    color: 'pink',
+    emoji: '🌈',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['AB patterns', 'AAB & ABB patterns', 'ABC patterns', 'Growing numbers'],
+  },
+  {
+    id: 'path-skip-counting',
+    title: 'Skip-Counting Kangaroo',
+    shortTitle: 'Skip Count',
+    description: 'Big jumps by 10s, 5s and 2s',
+    color: 'purple',
+    emoji: '🦘',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Jumps of 10', 'Jumps of 5', 'Jumps of 2', 'Groups of jumps'],
+  },
+  {
+    id: 'path-even-odd',
+    title: 'Duckling Partners',
+    shortTitle: 'Even/Odd',
+    description: 'Does every duckling have a partner?',
+    color: 'yellow',
+    emoji: '🐥',
+    mode: 'path',
+    group: 'path',
+    levelCount: 3,
+    questionsPerLevel: 6,
+    levelLabels: ['Pair the ducklings', 'Even or odd to 20', 'Spot the even number'],
+  },
+  {
+    id: 'path-fractions',
+    title: 'Picnic Fractions',
+    shortTitle: 'Fractions',
+    description: 'Share the picnic fairly with friends',
+    color: 'pink',
+    emoji: '🍕',
+    mode: 'path',
+    group: 'path',
+    levelCount: 3,
+    questionsPerLevel: 6,
+    levelLabels: ['Halves, thirds & quarters', 'Fair sharing', 'Which piece is bigger?'],
+  },
+  {
+    id: 'path-time',
+    title: "Rooster's Clock",
+    shortTitle: 'Time',
+    description: 'Help the rooster read the clock',
+    color: 'blue',
+    emoji: '⏰',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ["O'clock", 'Half past', 'Quarter past & to', 'Five-minute times'],
+  },
+  {
+    id: 'path-measure',
+    title: 'Measure & Weigh',
+    shortTitle: 'Measure',
+    description: 'Longer, shorter, heavier, lighter',
+    color: 'purple',
+    emoji: '📏',
+    mode: 'path',
+    group: 'path',
+    levelCount: 3,
+    questionsPerLevel: 6,
+    levelLabels: ['Longer or shorter', 'Measure with ladybugs', 'Heavier or lighter'],
+  },
+  {
+    id: 'path-shapes',
+    title: 'Shape Garden',
+    shortTitle: 'Shapes',
+    description: 'Name, count and find shapes',
+    color: 'blue',
+    emoji: '🔷',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Name the shape', 'Count the sides', 'Find the shapes', '3D shapes'],
+  },
+  {
+    id: 'path-graphs',
+    title: 'Garden Graph Detective',
+    shortTitle: 'Graphs',
+    description: 'Tally marks and picture graphs',
+    color: 'green',
+    emoji: '📊',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Tally marks', 'Which has the most?', 'Read the graph', 'How many more?'],
+  },
 ];
+
+export const HOME_ACTIVITIES = ACTIVITIES.filter((activity) => activity.group !== 'path');
+export const PATH_ACTIVITIES = ACTIVITIES.filter((activity) => activity.group === 'path');
 
 export const getActivity = (id: string): ActivityMeta | undefined =>
   ACTIVITIES.find((activity) => activity.id === id);
@@ -189,6 +350,8 @@ export const getEffectiveLevelCount = (
   settings: NumberSettings = DEFAULT_SETTINGS,
 ): number => {
   if (activityId === 'mixed-challenge') return 1;
+  // Learning paths progress by skill, so parent number caps don't shorten them.
+  if (getActivity(activityId)?.group === 'path') return levelCount;
   if (activityId === 'picture-addition') {
     const reachable = ADDITION_LEVEL_MAX.filter((sum) => sum <= settings.maxAdditionTotal).length;
     return Math.min(levelCount, Math.max(1, reachable));
@@ -213,6 +376,8 @@ export const getBandLabel = (
   settings: NumberSettings = DEFAULT_SETTINGS,
 ): string => {
   if (activityId === 'mixed-challenge') return `Numbers 1-${settings.maxNumber}`;
+  const labels = getActivity(activityId)?.levelLabels;
+  if (labels) return labels[Math.min(Math.max(level - 1, 0), labels.length - 1)];
   if (activityId === 'picture-addition') {
     return `Totals up to ${Math.min(getAdditionMaxSum(level), settings.maxAdditionTotal)}`;
   }

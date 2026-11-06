@@ -8,9 +8,11 @@ interface AnswerGridProps {
   selectedId: string | null;
   revealed: boolean;
   onSelect: (choice: AnswerChoice) => void;
+  /** Smaller text for word answers (e.g. "quarter past 3") that would overflow the big numeral size. */
+  compact?: boolean;
 }
 
-export const AnswerGrid = ({ choices, selectedId, revealed, onSelect }: AnswerGridProps) => {
+export const AnswerGrid = ({ choices, selectedId, revealed, onSelect, compact = false }: AnswerGridProps) => {
   return (
     <div className="answer-grid">
       {choices.map((choice, index) => {
@@ -24,6 +26,7 @@ export const AnswerGrid = ({ choices, selectedId, revealed, onSelect }: AnswerGr
             type="button"
             className={[
               'answer-choice',
+              compact ? 'answer-choice--compact' : '',
               `answer-choice--${COLORS[index % COLORS.length]}`,
               showCorrect ? 'answer-choice--correct' : '',
               showWrong ? 'answer-choice--wrong' : '',

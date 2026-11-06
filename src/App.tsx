@@ -19,6 +19,8 @@ import { RiverMission } from './screens/missions/RiverMission';
 import { EggMission } from './screens/missions/EggMission';
 import { GardenHub } from './screens/GardenHub';
 import { MarketMission } from './screens/MarketMission';
+import { LearningPaths } from './screens/LearningPaths';
+import { PathGame } from './screens/PathGame';
 import { useProgress } from './hooks/useProgress';
 import { getActivity, getEffectiveLevelCount } from './data/activities';
 import type { ActivityId, LevelResult, MissionId, Screen } from './types';
@@ -68,6 +70,12 @@ function App() {
     setActiveMission(null);
   };
 
+  const goToPaths = () => {
+    setScreen('paths');
+    setActiveActivity(null);
+    setLastResult(null);
+  };
+
   const handleSelectActivity = (id: ActivityId) => {
     setActiveActivity(id);
     setScreen('game');
@@ -88,7 +96,7 @@ function App() {
     if (lastResult?.leveledUp && activeActivity) {
       setScreen('game');
     } else {
-      goHome();
+      exitActivity();
     }
   };
 
@@ -98,6 +106,8 @@ function App() {
     wordMatchMaxNumber: progress.wordMatchMaxNumber,
   };
   const activeMeta = activeActivity ? getActivity(activeActivity) : undefined;
+  // Learning-path games return to the Learning Paths map rather than home.
+  const exitActivity = activeMeta?.group === 'path' ? goToPaths : goHome;
   const activeLevelCount = activeMeta ? getEffectiveLevelCount(activeMeta.id, activeMeta.levelCount, settings) : 1;
   const activeLevel = activeActivity
     ? Math.min(progress.activities[activeActivity].level, activeLevelCount)
@@ -126,6 +136,23 @@ function App() {
             onOpenAdventure={goToAdventureMap}
             onOpenGarden={goToGarden}
             onOpenWorlds={goToAdventures}
+            onOpenPaths={goToPaths}
+          />
+        )}
+
+        {screen === 'paths' && (
+          <LearningPaths progress={progress} onSelectActivity={handleSelectActivity} onBack={goHome} />
+        )}
+
+        {screen === 'game' && activeActivity && activeMeta?.mode === 'path' && (
+          <PathGame
+            key={`${activeActivity}-${activeLevel}-${lastResult?.correct ?? 'start'}`}
+            activityId={activeActivity}
+            level={activeLevel}
+            soundOn={progress.soundOn}
+            childName={progress.childName}
+            onExit={goToPaths}
+            onLevelComplete={handleLevelComplete}
           />
         )}
 
@@ -280,7 +307,7 @@ function App() {
             childName={progress.childName}
             soundOn={progress.soundOn}
             onNext={handleSuccessNext}
-            onHome={goHome}
+            onHome={exitActivity}
           />
         )}
 

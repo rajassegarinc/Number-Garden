@@ -1,4 +1,4 @@
-import { ACTIVITIES } from '../data/activities';
+import { HOME_ACTIVITIES, PATH_ACTIVITIES } from '../data/activities';
 import { MISSIONS } from '../data/missions';
 import { ActivityCard } from '../components/ActivityCard';
 import { CelebrationAnimal } from '../components/CelebrationAnimal';
@@ -14,10 +14,12 @@ interface HomeScreenProps {
   onOpenAdventure: () => void;
   onOpenGarden: () => void;
   onOpenWorlds: () => void;
+  onOpenPaths: () => void;
 }
 
-export const HomeScreen = ({ progress, onSelectActivity, onOpenSettings, onOpenAdventure, onOpenGarden, onOpenWorlds }: HomeScreenProps) => {
+export const HomeScreen = ({ progress, onSelectActivity, onOpenSettings, onOpenAdventure, onOpenGarden, onOpenWorlds, onOpenPaths }: HomeScreenProps) => {
   const missionsCompleted = MISSIONS.filter((m) => progress.missions[m.id].completed).length;
+  const pathsStarted = PATH_ACTIVITIES.filter((a) => progress.activities[a.id].attemptCount > 0).length;
   return (
     <div className="home-screen">
       <div className="home-header">
@@ -104,8 +106,23 @@ export const HomeScreen = ({ progress, onSelectActivity, onOpenSettings, onOpenA
         </span>
       </button>
 
+      <button type="button" className="home-paths-banner" onClick={onOpenPaths}>
+        <span className="home-world-icon" aria-hidden="true">🧭</span>
+        <span className="home-world-text">
+          <span className="home-world-title">Learning Paths</span>
+          <span className="home-world-sub">
+            Bees, frogs, crocodiles and more — {pathsStarted}/{PATH_ACTIVITIES.length} paths explored
+          </span>
+        </span>
+        <span className="home-world-chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </button>
+
       <div className="home-activity-list">
-        {ACTIVITIES.map((activity) => (
+        {HOME_ACTIVITIES.map((activity) => (
           <ActivityCard
             key={activity.id}
             activity={activity}

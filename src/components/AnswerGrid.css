@@ -21,6 +21,11 @@
   transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
 }
 
+.answer-choice--compact {
+  font-size: 20px;
+  line-height: 1.15;
+}
+
 .answer-choice:active:not(:disabled) {
   transform: scale(0.95);
   box-shadow: var(--shadow-press);

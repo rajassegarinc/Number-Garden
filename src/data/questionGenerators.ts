@@ -115,7 +115,7 @@ const pickDistractors = (
   return Array.from(distractors);
 };
 
-const buildNumeralChoices = (
+export const buildNumeralChoices = (
   correct: number,
   min: number,
   max: number,

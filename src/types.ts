@@ -11,9 +11,21 @@ export type ActivityId =
   | 'flower-line'
   | 'caterpillar-trail'
   | 'number-line'
-  | 'mixed-challenge';
+  | 'mixed-challenge'
+  | 'path-compare'
+  | 'path-bonds'
+  | 'path-subtraction'
+  | 'path-place-value'
+  | 'path-patterns'
+  | 'path-skip-counting'
+  | 'path-even-odd'
+  | 'path-fractions'
+  | 'path-time'
+  | 'path-measure'
+  | 'path-shapes'
+  | 'path-graphs';
 
-export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline';
+export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline' | 'path';
 
 export type CardColor = 'pink' | 'yellow' | 'purple' | 'blue' | 'green';
 
@@ -34,6 +46,10 @@ export interface ActivityMeta {
   orderSize?: number;
   /** Sort direction for order mode — defaults to ascending when omitted. */
   orderDirection?: 'asc' | 'desc';
+  /** Learning-path activities live on the Learning Paths map instead of the home list. */
+  group?: 'path';
+  /** Per-level labels for learning paths, which progress by skill rather than number band. */
+  levelLabels?: string[];
 }
 
 export interface AnswerChoice {
@@ -147,4 +163,5 @@ export type Screen =
   | 'mission'
   | 'garden'
   | 'market'
-  | 'adventures';
+  | 'adventures'
+  | 'paths';
