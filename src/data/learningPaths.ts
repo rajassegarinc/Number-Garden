@@ -27,7 +27,15 @@ export type PathScene =
   | { kind: 'shape-hunt'; shapes: ShapeName[] }
   | { kind: 'solid'; icon: string }
   | { kind: 'tally'; count: number }
-  | { kind: 'graph'; rows: Array<{ icon: string; count: number }> };
+  | { kind: 'graph'; rows: Array<{ icon: string; count: number }> }
+  | { kind: 'lifecycle-stage'; stage: LifeStage }
+  | { kind: 'lifecycle-next'; stage: LifeStage }
+  | { kind: 'lifecycle-cycle'; missing: LifeStage }
+  | { kind: 'leaves'; first: number; second: number };
+
+/** The four stages of a butterfly's life, in order (the cycle wraps round). */
+export const LIFE_STAGES = ['egg', 'caterpillar', 'chrysalis', 'butterfly'] as const;
+export type LifeStage = (typeof LIFE_STAGES)[number];
 
 export type ShapeName =
   | 'circle'
@@ -651,6 +659,100 @@ const graphsQuestion = (level: number): PathQuestion => {
   };
 };
 
+// ── 🦋 Butterfly Life Cycle ───────────────────────────────────────────
+const STAGE_NAME: Record<LifeStage, string> = {
+  egg: 'Egg',
+  caterpillar: 'Caterpillar',
+  chrysalis: 'Chrysalis',
+  butterfly: 'Butterfly',
+};
+const STAGE_FACT: Record<LifeStage, string> = {
+  egg: 'A butterfly starts as a tiny egg on a leaf.',
+  caterpillar: 'A caterpillar hatches and eats lots of leaves.',
+  chrysalis: 'The caterpillar makes a chrysalis and changes inside.',
+  butterfly: 'A butterfly comes out and spreads its wings!',
+};
+const stageNames = LIFE_STAGES.map((s) => STAGE_NAME[s]);
+
+const BUTTERFLY_FACTS: Array<{ q: string; stage: LifeStage; correct: string; wrong: string[]; explain: string }> = [
+  { q: 'What does a caterpillar love to eat?', stage: 'caterpillar', correct: 'Leaves', wrong: ['Nectar', 'Seeds', 'Fish'], explain: 'Caterpillars munch on leaves to grow big.' },
+  { q: 'What does a butterfly drink from flowers?', stage: 'butterfly', correct: 'Nectar', wrong: ['Milk', 'Leaves', 'Seeds'], explain: 'Butterflies sip sweet nectar from flowers.' },
+  { q: 'Where does a butterfly lay its eggs?', stage: 'egg', correct: 'On a leaf', wrong: ['In the sea', 'In a nest', 'In the sand'], explain: 'Eggs go on a leaf, so the baby caterpillar has food.' },
+  { q: 'What hatches out of a butterfly egg?', stage: 'egg', correct: 'Caterpillar', wrong: ['Chick', 'Butterfly', 'Tadpole'], explain: 'A tiny caterpillar hatches from the egg.' },
+  { q: 'What comes out of the chrysalis?', stage: 'chrysalis', correct: 'Butterfly', wrong: ['Caterpillar', 'Bee', 'Egg'], explain: 'A butterfly comes out of the chrysalis!' },
+  { q: 'Which stage hangs still while it changes?', stage: 'chrysalis', correct: 'Chrysalis', wrong: ['Caterpillar', 'Butterfly', 'Egg'], explain: 'The chrysalis hangs very still while the caterpillar changes inside.' },
+  { q: 'How many wings does a butterfly have?', stage: 'butterfly', correct: '4', wrong: ['2', '6', '8'], explain: 'A butterfly has 4 wings — 2 on each side.' },
+  { q: 'How many legs does a butterfly have?', stage: 'butterfly', correct: '6', wrong: ['4', '8', '2'], explain: 'Butterflies are insects, and insects have 6 legs.' },
+];
+
+const butterflyQuestion = (level: number): PathQuestion => {
+  if (level === 1) {
+    const stage = pick(LIFE_STAGES);
+    return {
+      id: uid('stage'),
+      key: stage,
+      prompt: 'Which stage of the butterfly’s life is this?',
+      spokenPrompt: 'Which stage of the butterfly’s life is this?',
+      scene: { kind: 'lifecycle-stage', stage },
+      choices: labelChoices(STAGE_NAME[stage], stageNames),
+      explain: STAGE_FACT[stage],
+    };
+  }
+  if (level === 2) {
+    const index = randomInt(0, LIFE_STAGES.length - 1);
+    const stage = LIFE_STAGES[index];
+    const next = LIFE_STAGES[(index + 1) % LIFE_STAGES.length];
+    return {
+      id: uid('next'),
+      key: stage,
+      prompt: `What comes after the ${stage}?`,
+      spokenPrompt: `What comes after the ${stage}?`,
+      scene: { kind: 'lifecycle-next', stage },
+      choices: labelChoices(STAGE_NAME[next], stageNames),
+      explain:
+        stage === 'butterfly'
+          ? 'The butterfly lays eggs, and the cycle starts again!'
+          : `After the ${stage} comes the ${next}!`,
+    };
+  }
+  if (level === 3) {
+    const missing = pick(LIFE_STAGES);
+    return {
+      id: uid('cycle'),
+      key: missing,
+      prompt: 'Which stage is missing from the life cycle?',
+      spokenPrompt: 'Look at the circle. Which stage is missing?',
+      scene: { kind: 'lifecycle-cycle', missing },
+      choices: labelChoices(STAGE_NAME[missing], stageNames),
+      explain: STAGE_FACT[missing],
+    };
+  }
+  // Level 4 mixes facts with a hungry-caterpillar counting question.
+  if (Math.random() < 0.25) {
+    const first = randomInt(1, 5);
+    const second = randomInt(1, 5);
+    return {
+      id: uid('leaves'),
+      key: `leaves-${first}-${second}`,
+      prompt: `The hungry caterpillar ate ${first} leaves, then ${second} more. How many leaves?`,
+      spokenPrompt: `The hungry caterpillar ate ${first} leaves, then ${second} more. How many leaves did it eat?`,
+      scene: { kind: 'leaves', first, second },
+      choices: numberChoices(first + second, 2, 10),
+      explain: `${first} and ${second} make ${first + second} leaves. Yum!`,
+    };
+  }
+  const fact = pick(BUTTERFLY_FACTS);
+  return {
+    id: uid('fact'),
+    key: fact.q,
+    prompt: fact.q,
+    spokenPrompt: fact.q,
+    scene: { kind: 'lifecycle-stage', stage: fact.stage },
+    choices: labelChoices(fact.correct, fact.wrong),
+    explain: fact.explain,
+  };
+};
+
 const GENERATORS: Partial<Record<ActivityId, (level: number) => PathQuestion>> = {
   'path-compare': compareQuestion,
   'path-bonds': bondsQuestion,
@@ -664,6 +766,7 @@ const GENERATORS: Partial<Record<ActivityId, (level: number) => PathQuestion>> =
   'path-measure': measureQuestion,
   'path-shapes': shapesQuestion,
   'path-graphs': graphsQuestion,
+  'path-butterfly': butterflyQuestion,
 };
 
 /** Generates the next question for a learning path, retrying a few times to
@@ -695,4 +798,4 @@ export const PATH_TRAIL: ActivityId[] = [
   'path-time',
   'path-measure',
 ];
-export const PATH_SIDE_QUESTS: ActivityId[] = ['path-shapes', 'path-graphs'];
+export const PATH_SIDE_QUESTS: ActivityId[] = ['path-shapes', 'path-graphs', 'path-butterfly'];

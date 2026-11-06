@@ -310,6 +310,19 @@ export const ACTIVITIES: ActivityMeta[] = [
     questionsPerLevel: 6,
     levelLabels: ['Tally marks', 'Which has the most?', 'Read the graph', 'How many more?'],
   },
+  {
+    id: 'path-butterfly',
+    title: 'Butterfly Life Cycle',
+    shortTitle: 'Butterfly',
+    description: 'Egg, caterpillar, chrysalis, butterfly!',
+    color: 'pink',
+    emoji: '🦋',
+    mode: 'path',
+    group: 'path',
+    levelCount: 4,
+    questionsPerLevel: 6,
+    levelLabels: ['Name the stage', 'What comes next?', 'Complete the cycle', 'Butterfly facts'],
+  },
 ];
 
 export const HOME_ACTIVITIES = ACTIVITIES.filter((activity) => activity.group !== 'path');

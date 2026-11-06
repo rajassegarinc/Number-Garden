@@ -1,4 +1,5 @@
-import type { PathScene as PathSceneData, ShapeName } from '../data/learningPaths';
+import { LIFE_STAGES, type LifeStage, type PathScene as PathSceneData, type ShapeName } from '../data/learningPaths';
+import { LifeStageArt } from './LifeStageArt';
 import './PathScene.css';
 
 interface PathSceneProps {
@@ -6,6 +7,10 @@ interface PathSceneProps {
   /** True once the child has answered — some scenes then show the answer in place. */
   revealed: boolean;
 }
+
+// Clockwise around a 3x3 grid; corner arrows lead from each stage to the next.
+const CYCLE_CELLS = ['↗', 'egg', '↘', 'butterfly', '🔄', 'caterpillar', '↖', 'chrysalis', '↙'] as const;
+const isStage = (cell: string): cell is LifeStage => (LIFE_STAGES as readonly string[]).includes(cell);
 
 const SHAPE_COLORS = ['#ff6fa5', '#2fa4e7', '#4caf50', '#ffb703', '#9b6bdf'];
 
@@ -543,6 +548,68 @@ export const PathScene = ({ scene, revealed }: PathSceneProps) => {
               ))}
             </span>
           </div>
+        </div>
+      );
+    case 'lifecycle-stage':
+      return (
+        <div className="path-scene path-life">
+          <LifeStageArt stage={scene.stage} size={150} />
+        </div>
+      );
+
+    case 'lifecycle-next': {
+      const next = LIFE_STAGES[(LIFE_STAGES.indexOf(scene.stage) + 1) % LIFE_STAGES.length];
+      return (
+        <div className="path-scene path-life path-life-next">
+          <LifeStageArt stage={scene.stage} size={110} />
+          <span className="path-life-arrow" aria-hidden="true">
+            ➜
+          </span>
+          {revealed ? (
+            <LifeStageArt stage={next} size={110} />
+          ) : (
+            <span className="path-life-blank">?</span>
+          )}
+        </div>
+      );
+    }
+
+    case 'lifecycle-cycle':
+      return (
+        <div className="path-scene path-life-cycle" role="img" aria-label="the butterfly life cycle with one stage missing">
+          {CYCLE_CELLS.map((cell) => {
+            if (!isStage(cell)) {
+              return (
+                <span key={cell} className="path-life-cycle-arrow" aria-hidden="true">
+                  {cell}
+                </span>
+              );
+            }
+            const hidden = cell === scene.missing && !revealed;
+            return (
+              <span key={cell} className={`path-life-cycle-stage ${hidden ? 'path-life-blank' : ''}`}>
+                {hidden ? '?' : <LifeStageArt stage={cell} size={76} />}
+              </span>
+            );
+          })}
+        </div>
+      );
+
+    case 'leaves':
+      return (
+        <div className="path-scene path-leaves" role="img" aria-label={`${scene.first} leaves and ${scene.second} more leaves`}>
+          <LifeStageArt stage="caterpillar" size={70} />
+          <span className="path-leaves-group">
+            {Array.from({ length: scene.first }, (_, i) => (
+              <span key={i}>🍃</span>
+            ))}
+          </span>
+          <span className="path-leaves-op">+</span>
+          <span className="path-leaves-group">
+            {Array.from({ length: scene.second }, (_, i) => (
+              <span key={i}>🍃</span>
+            ))}
+          </span>
         </div>
       );
   }

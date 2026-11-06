@@ -647,7 +647,77 @@
   color: var(--ink-soft);
 }
 
+/* 🦋 Butterfly life cycle */
+.path-life {
+  background: linear-gradient(180deg, #fff, var(--color-green-bg));
+}
+
+.path-life-next {
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.path-life-arrow {
+  font-size: 30px;
+  color: var(--color-pink-accent);
+}
+
+.path-life-blank {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--color-yellow-bg);
+  box-shadow: inset 0 0 0 3px #ffb703;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 34px;
+  color: #c97a1f;
+  animation: blank-pulse 1.4s ease-in-out infinite;
+}
+
+.path-life-cycle {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+  gap: 2px;
+  place-items: center;
+  background: linear-gradient(180deg, #fff, var(--color-pink-bg));
+}
+
+.path-life-cycle-arrow {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-pink-accent);
+}
+
+.path-life-cycle-stage {
+  display: flex;
+}
+
+.path-leaves {
+  gap: 8px;
+}
+
+.path-leaves-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 90px;
+  font-size: 26px;
+}
+
+.path-leaves-op {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 26px;
+  color: #2fa4e7;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .path-life-blank,
   .path-pond-hopper,
   .path-skip-roo,
   .path-pattern-item--blank,

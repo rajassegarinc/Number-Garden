@@ -23,7 +23,8 @@ export type ActivityId =
   | 'path-time'
   | 'path-measure'
   | 'path-shapes'
-  | 'path-graphs';
+  | 'path-graphs'
+  | 'path-butterfly';
 
 export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline' | 'path';
 
