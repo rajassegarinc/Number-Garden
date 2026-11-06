@@ -1,0 +1,115 @@
+.path-lesson {
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 18px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.path-lesson-badge {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 3px 12px;
+  border-radius: 999px;
+}
+
+.path-lesson-title {
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.path-lesson-closeup {
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 8px;
+  box-shadow: var(--shadow-soft);
+  animation: count-pop 0.4s ease;
+}
+
+.path-lesson-text {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--ink);
+  max-width: 340px;
+}
+
+.path-lesson-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.path-lesson-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cream-deep);
+}
+
+.path-lesson-dot--on {
+  background: var(--color-pink-accent);
+}
+
+.path-lesson-nav {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.path-lesson-btn {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink);
+  min-height: 56px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.12s ease;
+}
+
+.path-lesson-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.path-lesson-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.path-lesson-btn--back {
+  flex: 0 0 34%;
+  background: #ffffff;
+}
+
+.path-lesson-btn--next {
+  background: var(--color-blue-bg);
+}
+
+.path-lesson-btn--go {
+  background: var(--color-pink-bg);
+  box-shadow: 0 0 0 3px var(--color-pink-accent), var(--shadow-soft);
+}
+
+.path-lesson-skip {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  padding: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path-lesson-closeup {
+    animation: none;
+  }
+}

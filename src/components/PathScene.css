@@ -695,6 +695,33 @@
 
 .path-life-cycle-stage {
   display: flex;
+  padding: 2px 3px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 18px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.path-life-cycle--labels {
+  grid-template-rows: repeat(3, 88px);
+}
+
+.path-life-cycle-label {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.path-life-cycle-stage--dim {
+  opacity: 0.35;
+}
+
+.path-life-cycle-stage--on {
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--color-pink-accent);
+  transform: scale(1.12);
 }
 
 .path-leaves {

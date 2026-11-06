@@ -12,6 +12,57 @@ interface PathSceneProps {
 const CYCLE_CELLS = ['↗', 'egg', '↘', 'butterfly', '🔄', 'caterpillar', '↖', 'chrysalis', '↙'] as const;
 const isStage = (cell: string): cell is LifeStage => (LIFE_STAGES as readonly string[]).includes(cell);
 
+const STAGE_LABEL: Record<LifeStage, string> = {
+  egg: 'Egg',
+  caterpillar: 'Caterpillar',
+  chrysalis: 'Chrysalis',
+  butterfly: 'Butterfly',
+};
+
+interface LifeCycleWheelProps {
+  /** Stage shown as "?" (quiz). */
+  missing?: LifeStage;
+  /** Stage spotlighted while the others fade back (lesson). */
+  highlight?: LifeStage;
+  labels?: boolean;
+}
+
+/** The whole butterfly life cycle as one picture: four stages round a circle. */
+export const LifeCycleWheel = ({ missing, highlight, labels = false }: LifeCycleWheelProps) => (
+  <div
+    className={`path-scene path-life-cycle ${labels ? 'path-life-cycle--labels' : ''}`}
+    role="img"
+    aria-label={missing ? 'the butterfly life cycle with one stage missing' : 'the butterfly life cycle'}
+  >
+    {CYCLE_CELLS.map((cell) => {
+      if (!isStage(cell)) {
+        return (
+          <span key={cell} className="path-life-cycle-arrow" aria-hidden="true">
+            {cell}
+          </span>
+        );
+      }
+      if (cell === missing) {
+        return (
+          <span key={cell} className="path-life-cycle-stage path-life-blank">
+            ?
+          </span>
+        );
+      }
+      const dim = highlight !== undefined && cell !== highlight;
+      return (
+        <span
+          key={cell}
+          className={`path-life-cycle-stage ${dim ? 'path-life-cycle-stage--dim' : ''} ${cell === highlight ? 'path-life-cycle-stage--on' : ''}`}
+        >
+          <LifeStageArt stage={cell} size={labels ? 62 : 76} />
+          {labels && <span className="path-life-cycle-label">{STAGE_LABEL[cell]}</span>}
+        </span>
+      );
+    })}
+  </div>
+);
+
 const SHAPE_COLORS = ['#ff6fa5', '#2fa4e7', '#4caf50', '#ffb703', '#9b6bdf'];
 
 const polygonPoints = (sides: number, r: number, rotate = -90): string =>
@@ -575,25 +626,7 @@ export const PathScene = ({ scene, revealed }: PathSceneProps) => {
     }
 
     case 'lifecycle-cycle':
-      return (
-        <div className="path-scene path-life-cycle" role="img" aria-label="the butterfly life cycle with one stage missing">
-          {CYCLE_CELLS.map((cell) => {
-            if (!isStage(cell)) {
-              return (
-                <span key={cell} className="path-life-cycle-arrow" aria-hidden="true">
-                  {cell}
-                </span>
-              );
-            }
-            const hidden = cell === scene.missing && !revealed;
-            return (
-              <span key={cell} className={`path-life-cycle-stage ${hidden ? 'path-life-blank' : ''}`}>
-                {hidden ? '?' : <LifeStageArt stage={cell} size={76} />}
-              </span>
-            );
-          })}
-        </div>
-      );
+      return <LifeCycleWheel missing={revealed ? undefined : scene.missing} />;
 
     case 'leaves':
       return (

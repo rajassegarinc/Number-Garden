@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CRITTER_ORDER, getActivity, getBandLabel } from '../data/activities';
-import { generatePathQuestion, type PathQuestion } from '../data/learningPaths';
+import { PATH_LESSONS, generatePathQuestion, type PathQuestion } from '../data/learningPaths';
 import { GameHeader } from '../components/GameHeader';
 import { AnswerGrid } from '../components/AnswerGrid';
 import { PathScene } from '../components/PathScene';
+import { PathLesson } from '../components/PathLesson';
 import { SideCritter } from '../components/SideCritter';
 import { useSpeech } from '../hooks/useSpeech';
 import type { ActivityId, AnswerChoice, LevelResult } from '../types';
@@ -27,6 +28,10 @@ export const PathGame = ({ activityId, level, soundOn, childName, onExit, onLeve
   const activity = getActivity(activityId);
   const totalQuestions = activity?.questionsPerLevel ?? 6;
   const { speak, supported } = useSpeech(soundOn);
+  // Teach-first paths open with a picture lesson; the quiz starts after it.
+  const lesson = PATH_LESSONS[activityId];
+  const [lessonIndex, setLessonIndex] = useState<number | null>(lesson ? 0 : null);
+  const inLesson = lesson !== undefined && lessonIndex !== null;
 
   // Stable Set of question keys asked this level (App remounts on a new level).
   const [usedKeys] = useState<Set<string>>(() => new Set());
@@ -49,14 +54,20 @@ export const PathGame = ({ activityId, level, soundOn, childName, onExit, onLeve
   }, []);
 
   const speakPrompt = useCallback(() => {
+    if (lesson && lessonIndex !== null) {
+      const slide = lesson[lessonIndex];
+      speak(`${slide.title}. ${slide.text}`);
+      return;
+    }
     speak(question.spokenPrompt);
-  }, [question, speak]);
+  }, [question, speak, lesson, lessonIndex]);
 
   useEffect(() => {
-    speakPrompt();
-    // Only re-run when the question identity changes.
+    // The lesson reads its own slides; prompts start once the quiz does.
+    if (!inLesson) speak(question.spokenPrompt);
+    // Only re-run when the question identity or phase changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [question.id]);
+  }, [question.id, inLesson]);
 
   const handleSelect = (choice: AnswerChoice) => {
     if (revealed) return;
@@ -98,38 +109,53 @@ export const PathGame = ({ activityId, level, soundOn, childName, onExit, onLeve
     <div className="game-screen">
       <GameHeader
         title={activity.title}
-        current={questionIndex + 1}
-        total={totalQuestions}
+        current={inLesson ? lessonIndex + 1 : questionIndex + 1}
+        total={inLesson ? lesson.length : totalQuestions}
         onBack={onExit}
         onHearPrompt={speakPrompt}
         speechSupported={supported}
         childName={childName}
       />
 
-      <div className="game-screen-body">
-        <div className="path-game-card">
-          <span className="path-game-level">
-            {activity.emoji} Level {level}: {getBandLabel(activityId, level)}
-          </span>
-          <p className="path-game-prompt">{question.prompt}</p>
-          <PathScene scene={question.scene} revealed={revealed} />
-          <p className={`path-game-feedback ${revealed ? 'path-game-feedback--show' : ''}`} aria-live="polite">
-            {revealed ? `${wasCorrect ? '🎉 Great job!' : '🌱 Good try!'} ${question.explain}` : ' '}
-          </p>
+      {inLesson ? (
+        <div className="game-screen-body">
+          <PathLesson
+            slides={lesson}
+            index={lessonIndex}
+            onIndexChange={setLessonIndex}
+            onFinish={() => setLessonIndex(null)}
+            speak={speak}
+          />
         </div>
+      ) : (
+        <div className="game-screen-body">
+          <div className="path-game-card">
+            <span className="path-game-level">
+              {activity.emoji} Level {level}: {getBandLabel(activityId, level)}
+            </span>
+            <p className="path-game-prompt">{question.prompt}</p>
+            <PathScene scene={question.scene} revealed={revealed} />
+            <p className={`path-game-feedback ${revealed ? 'path-game-feedback--show' : ''}`} aria-live="polite">
+              {revealed ? `${wasCorrect ? '🎉 Great job!' : '🌱 Good try!'} ${question.explain}` : ' '}
+            </p>
+          </div>
 
-        <AnswerGrid
-          choices={question.choices}
-          selectedId={selectedId}
-          revealed={revealed}
-          onSelect={handleSelect}
-          compact={compact}
-        />
-      </div>
+          <AnswerGrid
+            choices={question.choices}
+            selectedId={selectedId}
+            revealed={revealed}
+            onSelect={handleSelect}
+            compact={compact}
+          />
+        </div>
+      )}
 
-      <div className="game-screen-critter">
-        <SideCritter kind={critter} />
-      </div>
+      {/* Hidden during the lesson so it doesn't cover the Back button. */}
+      {!inLesson && (
+        <div className="game-screen-critter">
+          <SideCritter kind={critter} />
+        </div>
+      )}
     </div>
   );
 };

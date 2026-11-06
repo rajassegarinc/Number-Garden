@@ -785,6 +785,49 @@ export const generatePathQuestion = (
   return question;
 };
 
+/** One page of a picture lesson shown before a path's quiz. `stage`
+ * spotlights that stage in the full life-cycle picture; omitted shows the
+ * whole cycle with every stage labelled. */
+export interface LessonSlide {
+  title: string;
+  text: string;
+  stage?: LifeStage;
+}
+
+/** Teach-first lessons: paths listed here open with a lesson, then the quiz. */
+export const PATH_LESSONS: Partial<Record<ActivityId, LessonSlide[]>> = {
+  'path-butterfly': [
+    {
+      title: 'The Life Cycle of a Butterfly',
+      text: 'A butterfly changes four times as it grows. The four stages go round and round in a circle. Let’s learn them!',
+    },
+    {
+      title: '1. Egg',
+      stage: 'egg',
+      text: 'A mother butterfly lays tiny eggs on a leaf. Each egg is smaller than a grain of rice!',
+    },
+    {
+      title: '2. Caterpillar',
+      stage: 'caterpillar',
+      text: 'A little caterpillar hatches out of the egg. It eats and eats leaves, and grows bigger and bigger.',
+    },
+    {
+      title: '3. Chrysalis',
+      stage: 'chrysalis',
+      text: 'The big caterpillar hangs from a twig and makes a case called a chrysalis. Inside, it slowly changes.',
+    },
+    {
+      title: '4. Butterfly',
+      stage: 'butterfly',
+      text: 'A beautiful butterfly comes out of the chrysalis! It spreads its wings and drinks nectar from flowers.',
+    },
+    {
+      title: 'Round and Round!',
+      text: 'Then the butterfly lays eggs, and the cycle starts again: egg, caterpillar, chrysalis, butterfly.',
+    },
+  ],
+};
+
 /** Suggested order on the Learning Paths map; side quests can be played any time. */
 export const PATH_TRAIL: ActivityId[] = [
   'path-compare',
