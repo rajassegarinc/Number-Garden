@@ -186,6 +186,9 @@
 .mf-world-card:active{transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
 .mf-world-card.forest{background:linear-gradient(#9fd8f0 0 45%,#8fd06a 45%)}
 .mf-world-card.sea{background:linear-gradient(#8ee0f5,#2f86c0 70%,#e9cf8e 70%)}
+.mf-world-card.savanna{background:linear-gradient(#9fd0ea 0 35%,#f0d27a 35% 75%,#c99a46 75%)}
+.mf-world-card.dino{background:linear-gradient(#bfe6d0 0 45%,#6fae7a 45% 75%,#8a6b4a 75%)}
+.mf-world-card.drive{background:linear-gradient(#bfe8cf 0 55%,#a8d46a 55% 78%,#c9a24a 78%)}
 .mf-card-art{position:absolute;inset:0;pointer-events:none}
 .mf-card-hero{position:absolute;right:12px;top:10px;width:46%;max-width:170px;height:auto;animation:mf-bob 2.6s ease-in-out infinite}
 .mf-card-peeks{position:absolute;left:14px;top:14px;display:flex;gap:4px}

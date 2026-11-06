@@ -1,0 +1,48 @@
+/* Dino Egg Rescue — gentle valley rescue round. Reuses MagicalForest.css's
+   mf-chase, mf-sheet, and mf-sticker shell classes (same as "Save the Deer")
+   for layout and chrome; everything below is additive and scoped under
+   dr-prefixed classes so Forest, Sea, Savanna, and Chase keep their exact
+   current look. */
+
+/* -- "egg & nest" re-skin for the reused OrderActivity/AddActivity visuals --
+   These three CSS custom properties are the only thing that change: the
+   shared .mf-branch/.mf-hollow/.mf-acorn (ordering) and .mf-basket (adding)
+   rules already read them from MagicalForest.css, so re-defining them here,
+   scoped to .dr-skin, re-themes the look with zero component changes. */
+.dr-skin{ --bark:#c9a24a; --bark-dk:#a07a32; --wood:#fdf3dd; }
+
+/* -- valley scene -- */
+.dr-smoke{ animation:dr-smoke 7s ease-in infinite; opacity:0; }
+@keyframes dr-smoke{
+  0%{ transform:translateY(0) scale(.6); opacity:0; }
+  12%{ opacity:.55; }
+  60%{ opacity:.22; }
+  100%{ transform:translateY(-70px) scale(1.5); opacity:0; }
+}
+
+/* -- dinos wandering the valley after hatching -- */
+.dr-wander{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; padding:4px 10px; min-height:0; }
+.dr-wanderer{ width:44px; height:44px; animation:dr-wander-in .4s ease-out; }
+@keyframes dr-wander-in{ from{ transform:scale(.3); opacity:0; } to{ transform:scale(1); opacity:1; } }
+
+/* -- nest-fill (CollectQuest) egg/nest glyphs -- */
+.dr-egg-item{ font-size:34px; }
+.dr-nest{ font-size:40px; display:inline-flex; }
+
+/* -- hatching -- */
+.dr-hatch-svg{ display:block; width:170px; height:auto; margin:0 auto; }
+.dr-egg-half{ transform-box:fill-box; transform-origin:center; transition:transform .5s cubic-bezier(.34,1.56,.64,1); }
+.dr-egg-cracked .dr-egg-top{ transform:translate(-14px,-18px) rotate(-22deg); }
+.dr-egg-cracked .dr-egg-bottom{ transform:translate(14px,16px) rotate(18deg); }
+.dr-hatch-baby{
+  transform-box:fill-box; transform-origin:center;
+  opacity:0; transform:scale(.3) translateY(26px);
+  transition:opacity .4s .25s ease, transform .4s .25s cubic-bezier(.34,1.56,.64,1);
+}
+.dr-egg.dr-egg-cracked + .dr-hatch-baby{ opacity:1; transform:scale(1) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-smoke{ animation:none; opacity:0; }
+  .dr-wanderer{ animation:none; }
+  .dr-egg-half, .dr-hatch-baby{ transition:none; }
+}

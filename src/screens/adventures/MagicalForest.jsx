@@ -1,9 +1,11 @@
-// MagicalForest.jsx — Number Garden adventure worlds for ages ~4: a world map, a Magical Forest and
-// Under the Sea. 20 cartoon animals hide in each; tapping a marker opens a maths question, answering reveals the animal.
+// MagicalForest.jsx — Number Garden adventure worlds for ages ~4: a world map, a Magical Forest,
+// Under the Sea and a Sunny Savanna. 20 cartoon animals hide in each; tapping a marker opens a maths question, answering reveals the animal.
 // Skills (all within 1–10): counting, before/after, ordering 1–10, adding.
 // Usage: import MagicalForest from "./MagicalForest"; import "./MagicalForest.css";
 // <MagicalForest onExit={goHome} /> — onExit, if given, adds a button on the world map back to the host app.
 import React, { useState, useEffect, useRef } from "react";
+import DinoRescue, { DinoSvg, DINO_IDS } from "./DinoRescue.jsx";
+import NumberDriveAdventure from "./NumberDriveAdventure.jsx";
 
 /* ---------------- helpers ---------------- */
 const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
@@ -36,6 +38,12 @@ function say(text, { show = true, rate = 0.85 } = {}) {
     s.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = rate; u.pitch = 1.15; s.speak(u);
   } catch {}
 }
+// For other screens (e.g. DinoRescue.jsx) that want to hook into the shared
+// say()/🔊-repeat system: promptListener/lastPrompt are module-private
+// mutable bindings, so an importing file can't assign into them directly —
+// these two small functions are the only additive surface needed for that.
+function subscribePrompt(setter) { promptListener = setter; return () => { promptListener = null; }; }
+function getLastPrompt() { return lastPrompt; }
 
 /* ---------------- content ---------------- */
 const OBJECTS = [
@@ -55,7 +63,7 @@ const pickPraise = () => PRAISE[rand(0, PRAISE.length - 1)];
 const PKEY = "mf-progress-v1";
 function defaultProgress() {
   const fl = +(safeGet("fl-level") || 0); // carry over Flower Line progress
-  return { unlocked: fl >= 2 ? 2 : 1, hist: { count: [], ba: [], order: [], add: [] }, weak: {}, streak: {}, sessions: [], focus: "auto", foundBy: { forest: [], sea: [] } };
+  return { unlocked: fl >= 2 ? 2 : 1, hist: { count: [], ba: [], order: [], add: [] }, weak: {}, streak: {}, sessions: [], focus: "auto", foundBy: { forest: [], sea: [] }, dinos: [], driveLevel: 0, driveRounds: 0 };
 }
 function loadProgress() {
   try {
@@ -182,7 +190,7 @@ function CountActivity({ ch, onStep, onSolved, onMiss }) {
 }
 
 /* ---------------- activity: before / after ---------------- */
-function BAActivity({ ch, onStep, onSolved, onMiss }) {
+function BAActivity({ ch, onStep, onSolved, onMiss, markerEmoji = "🐞" }) {
   const { dir, n, ans, choices } = ch; const alive = useAlive();
   const [misses, setMisses] = useState(0), [maxHint, setMaxHint] = useState(0);
   const [path, setPath] = useState(false), [lit, setLit] = useState(0), [busy, setBusy] = useState(false), [solved, setSolved] = useState(false);
@@ -212,7 +220,7 @@ function BAActivity({ ch, onStep, onSolved, onMiss }) {
         {stones.map((s, i) => s === null ? <span key={i} className="mf-stone empty" /> : (
           <span key={i} className={`mf-stone${s === "?" ? " gap" : ""}${s === n ? " here" : ""}`}>
             {s === "?" ? (solved ? ans : "?") : s}
-            {s === n && <span className="mf-bug" aria-hidden="true">🐞</span>}
+            {s === n && <span className="mf-bug" aria-hidden="true">{markerEmoji}</span>}
           </span>
         ))}
       </div>
@@ -305,7 +313,7 @@ function OrderActivity({ ch, progress, onStep, onSolved }) {
 }
 
 /* ---------------- activity: adding ---------------- */
-function AddActivity({ ch, onStep, onSolved, onMiss }) {
+function AddActivity({ ch, onStep, onSolved, onMiss, markerEmoji = "🐿️" }) {
   const { a, b, ans, obj, choices } = ch; const alive = useAlive();
   const [left, setLeft] = useState(a), [right, setRight] = useState(b), [basket, setBasket] = useState(0);
   const [counted, setCounted] = useState([]), [lit, setLit] = useState(0);
@@ -353,7 +361,7 @@ function AddActivity({ ch, onStep, onSolved, onMiss }) {
         </div>
       </div>
       <div className="mf-basket-wrap">
-        <span className="mf-helper" aria-hidden="true">🐿️</span>
+        <span className="mf-helper" aria-hidden="true">{markerEmoji}</span>
         <div className="mf-basket" aria-label={`Basket with ${basket}`}>
           {Array.from({ length: basket }, (_, i) => {
             const c = counted.indexOf(i), on = c >= 0 || i < lit;
@@ -1179,6 +1187,271 @@ function Bubble({ y, color }) {
   );
 }
 
+/* ================= savanna animal art (viewBox 0 0 100 100) ================= */
+const MANE_PTS = (() => { const pts = []; for (let i = 0; i <= 24; i++) { const a = (i * Math.PI * 2) / 24, r = i % 2 ? 32 : 45; pts.push(`${(50 + Math.cos(a) * r).toFixed(1)},${(56 + Math.sin(a) * r * 0.95).toFixed(1)}`); } return pts.join(" "); })();
+Object.assign(MAM, {
+  lion: { fur: "#e3a74a", inner: "#fff0c4", muzzle: "#fff6dd", ear: "round", mw: 18, chest: true,
+    earExtra: <polygon points={MANE_PTS} fill="#c67f2e" {...o} /> },
+  cheetah: { fur: "#f0c878", inner: "#fff4da", muzzle: "#fff8e8", ear: "round", mw: 15, chest: true,
+    face: <g fill="#2b1d16"><circle cx="30" cy="42" r="3" /><circle cx="70" cy="42" r="3" /><circle cx="22" cy="58" r="2.6" /><circle cx="78" cy="58" r="2.6" /><circle cx="36" cy="30" r="2.4" /><circle cx="64" cy="30" r="2.4" /><circle cx="50" cy="38" r="2.4" /><circle cx="26" cy="72" r="2.4" /><circle cx="74" cy="72" r="2.4" /></g>,
+    extra: <path d="M41 58 Q39 66 37 74 M59 58 Q61 66 63 74" stroke="#2b1d16" strokeWidth="2.6" fill="none" strokeLinecap="round" /> },
+  leopard: { fur: "#eab857", inner: "#fff2d0", muzzle: "#fff6e0", ear: "round", mw: 15, chest: true,
+    face: <g fill="none" stroke="#5a3a1e" strokeWidth="2.4">{[[30, 38], [68, 36], [22, 56], [78, 56], [36, 70], [62, 72], [50, 30]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="5" />)}</g> },
+  hyena: { fur: "#c9b183", inner: "#8a7a5c", muzzle: "#5a4e42", ear: "big", mw: 15, noSmile: true,
+    face: <g fill="#5a4e38">{[[32, 36], [64, 34], [24, 58], [76, 58], [46, 70]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3.2" />)}</g>,
+    extra: <path d="M43 70 q7 5 14 0" stroke="#efe6d8" strokeWidth="2" fill="none" strokeLinecap="round" /> },
+  jackal: { fur: "#b4915e", inner: "#f3e0bb", muzzle: "#fff4e0", ear: "point", chest: true,
+    earExtra: <g fill={OL}><path d="M20 10 L22.6 21 L29.5 15.5Z" /><path d="M80 10 L77.4 21 L70.5 15.5Z" /></g> },
+  warthog: { fur: "#8d8068", inner: "#cdb89a", muzzle: "#e8d4b0", ear: "small", mw: 21,
+    extra: <g><path d="M38 72 Q28 88 36 92 Q44 84 45 74Z" fill="#f4ead6" stroke={OL} strokeWidth="2" strokeLinejoin="round" /><path d="M62 72 Q72 88 64 92 Q56 84 55 74Z" fill="#f4ead6" stroke={OL} strokeWidth="2" strokeLinejoin="round" /><circle cx="33" cy="62" r="2.6" fill="#6e6252" /><circle cx="67" cy="62" r="2.6" fill="#6e6252" /></g> },
+  meerkat: { fur: "#c9a876", inner: "#eadcc0", muzzle: "#f3ead0", ear: "small", mw: 14,
+    face: <g fill="#4a3c2c"><ellipse cx="39" cy="55" rx="8" ry="10" /><ellipse cx="61" cy="55" rx="8" ry="10" /></g> },
+  mongoose: { fur: "#a89a7a", inner: "#e8dcc0", muzzle: "#f3ead0", ear: "small", mw: 13 },
+  baboon: { fur: "#8a6b4a", inner: "#5a4432", muzzle: "#e8a9a0", ear: "small", mw: 20 },
+  buffalo: { fur: "#584938", inner: "#3a2e22", muzzle: "#7a6250", ear: "side", mw: 17,
+    earExtra: <path d="M18 20 Q8 40 22 52 Q30 38 38 26 M82 20 Q92 40 78 52 Q70 38 62 26" fill="#3a3a3a" {...o} /> },
+  gazelle: { fur: "#d9b579", inner: "#f6e3bd", muzzle: "#fdf1da", ear: "side", chest: true,
+    earExtra: <path d="M40 32 Q36 18 42 6 M60 32 Q64 18 58 6" stroke="#6e5a3c" strokeWidth="5" strokeLinecap="round" fill="none" /> },
+});
+Object.assign(SPECIAL, {
+  giraffe: () => (
+    <g>
+      <path d="M18 101 C18 86 30 80 50 80 C70 80 82 86 82 101Z" fill="#f0cf80" {...o} />
+      <g fill="#c9933e" opacity=".85"><rect x="26" y="86" width="10" height="9" rx="2" /><rect x="46" y="88" width="11" height="9" rx="2" /><rect x="64" y="86" width="10" height="9" rx="2" /></g>
+      <path d="M38 80 C34 50 36 24 44 4 L58 4 C64 24 64 50 60 80Z" fill="#f0cf80" {...o} />
+      <g fill="#c9933e" opacity=".85">{[[42, 66], [54, 56], [44, 42], [56, 30], [46, 16]].map(([x, y], i) => <rect key={i} x={x} y={y} width="9" height="8" rx="2" />)}</g>
+      <circle cx="50" cy="16" r="15" fill="#f0cf80" {...o} />
+      <circle cx="42" cy="4" r="4" fill="#c9933e" {...o} /><circle cx="58" cy="4" r="4" fill="#c9933e" {...o} />
+      <Eyes y={14} dx={9} r={4.4} /><Blush y={22} dx={14} />
+      <path d="M45 24 q5 4 10 0" stroke={OL} strokeWidth="2" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  zebra: () => (
+    <g>
+      <path d="M18 101 C18 80 32 72 50 72 C68 72 82 80 82 101Z" fill="#fdfaf2" {...o} />
+      <path d="M24 78 Q30 88 24 98 M44 74 Q50 86 44 100 M56 74 Q62 86 56 100 M76 78 Q82 88 76 98" stroke={OL} strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <path d="M30 16 L22 2 L34 10Z M70 16 L78 2 L66 10Z" fill="#2b2b2f" {...o} />
+      <ellipse cx="50" cy="46" rx="29" ry="25" fill="#fdfaf2" {...o} />
+      <path d="M26 30 Q34 26 42 30 M58 30 Q66 26 74 30 M22 42 Q30 40 36 44 M64 44 Q70 40 78 42 M30 56 Q38 54 44 58 M56 58 Q62 54 70 56" stroke={OL} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <path d="M18 28 Q10 20 18 12 Q26 20 24 30Z M82 28 Q90 20 82 12 Q74 20 76 30Z" fill="#2b2b2f" {...o} />
+      <Eyes y={44} dx={11} r={5} /><Blush y={56} dx={18} />
+      <path d="M45 59 q5 4 10 0" stroke={OL} strokeWidth="2" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  elephant: () => (
+    <g>
+      <path d="M12 101 C12 78 30 70 50 70 C70 70 88 78 88 101Z" fill="#a9b0b8" {...o} />
+      <ellipse cx="22" cy="76" rx="20" ry="26" fill="#9aa2aa" {...o} /><ellipse cx="78" cy="76" rx="20" ry="26" fill="#9aa2aa" {...o} />
+      <ellipse cx="50" cy="48" rx="34" ry="30" fill="#b7bec5" {...o} />
+      <path d="M42 66 Q36 86 44 98 Q50 100 50 92 Q46 80 50 66Z" fill="#b7bec5" {...o} />
+      <Eyes y={46} dx={16} r={5.4} /><Blush y={58} dx={26} />
+      <path d="M46 62 q4 3 8 0" stroke={OL} strokeWidth="2" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  hippo: () => (
+    <g>
+      <path d="M10 101 C10 82 28 76 50 76 C72 76 90 82 90 101Z" fill="#8fae7c" {...o} />
+      <ellipse cx="24" cy="54" rx="13" ry="12" fill="#9fc08e" {...o} /><ellipse cx="76" cy="54" rx="13" ry="12" fill="#9fc08e" {...o} />
+      <ellipse cx="50" cy="56" rx="38" ry="28" fill="#9fc08e" {...o} />
+      <path d="M18 66 Q50 92 82 66 Q78 84 50 86 Q22 84 18 66Z" fill="#fff0da" {...o} />
+      <path d="M30 68 l2 8 M42 72 l1 8 M58 72 l-1 8 M70 68 l-2 8" stroke={OL} strokeWidth="2" strokeLinecap="round" />
+      <Eyes y={46} dx={17} r={5.4} /><Blush y={62} dx={26} />
+    </g>
+  ),
+  rhino: () => (
+    <g>
+      <path d="M14 101 C14 80 30 72 50 72 C70 72 86 80 86 101Z" fill="#9a9a90" {...o} />
+      <ellipse cx="26" cy="46" rx="11" ry="9" fill="#a8a89e" {...o} /><ellipse cx="74" cy="46" rx="11" ry="9" fill="#a8a89e" {...o} />
+      <ellipse cx="50" cy="54" rx="33" ry="26" fill="#a8a89e" {...o} />
+      <path d="M40 72 Q36 86 44 92 Q50 92 48 80 Q50 72 46 68Z" fill="#8a8a80" {...o} />
+      <path d="M46 40 L50 16 L56 40Z" fill="#8a8a80" {...o} />
+      <Eyes y={52} dx={15} r={5} /><Blush y={64} dx={24} />
+      <path d="M44 70 q6 4 12 0" stroke={OL} strokeWidth="2" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  ostrich: () => (
+    <g>
+      <path d="M22 101 C20 78 30 64 50 64 C70 64 80 78 78 101Z" fill="#3a3a40" {...o} />
+      <path d="M44 64 Q36 40 42 18 Q46 10 50 10 Q54 10 50 20 Q56 40 56 64Z" fill="#e8c27a" {...o} />
+      <circle cx="50" cy="16" r="12" fill="#e8c27a" {...o} />
+      <path d="M50 16 L68 14 L50 22Z" fill="#ff9a3c" {...o} />
+      <Eyes y={13} dx={7} r={3.6} /><Blush y={19} dx={10} />
+      <g fill="#55555e"><ellipse cx="34" cy="90" rx="6" ry="12" /><ellipse cx="66" cy="90" rx="6" ry="12" /></g>
+    </g>
+  ),
+  vulture: () => (
+    <g>
+      <path d="M20 101 C16 72 28 50 50 50 C72 50 84 72 80 101Z" fill="#5a5a52" {...o} />
+      <path d="M14 70 C8 50 16 32 28 28 C22 46 24 62 30 76Z" fill="#45453f" {...o} />
+      <path d="M86 70 C92 50 84 32 72 28 C78 46 76 62 70 76Z" fill="#45453f" {...o} />
+      <ellipse cx="50" cy="38" rx="22" ry="20" fill="#d9a06a" {...o} />
+      <Eyes y={36} dx={10} r={4.6} /><Blush y={48} dx={16} />
+      <path d="M38 48 L50 54 L38 58Z" fill="#8a6b4a" stroke={OL} strokeWidth="1.8" strokeLinejoin="round" />
+    </g>
+  ),
+  crocodile: () => (
+    <g>
+      <path d="M6 82 L94 82 L80 100 L20 100Z" fill="#6fae5a" {...o} />
+      <path d="M10 82 Q10 58 50 58 Q90 58 90 82Z" fill="#7fc06a" {...o} />
+      <g stroke={OL} strokeWidth="1.6" fill="#5a9a48">{[18, 34, 50, 66, 82].map((x, i) => <path key={i} d={`M${x} 58 L${x - 6} 46 L${x + 6} 46Z`} />)}</g>
+      <path d="M10 76 Q4 70 10 64 L26 64 Q30 70 28 76Z" fill="#7fc06a" {...o} />
+      <g fill="#fff">{[14, 20, 26].map((x, i) => <rect key={i} x={x} y="64" width="4" height="7" />)}</g>
+      <Eyes y={62} dx={13} r={5} ring /><Blush y={72} dx={20} />
+      <path d="M30 78 Q50 86 70 78" stroke={OL} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  flamingo: () => (
+    <g>
+      <ellipse cx="46" cy="70" rx="26" ry="24" fill="#ff8fc8" {...o} />
+      <path d="M44 48 C36 34 40 16 52 6" stroke="#ff8fc8" strokeWidth="12" fill="none" strokeLinecap="round" />
+      <path d="M44 48 C36 34 40 16 52 6" stroke={OL} strokeWidth="2" fill="none" strokeLinecap="round" />
+      <circle cx="54" cy="6" r="11" fill="#ff8fc8" {...o} />
+      <path d="M54 6 L70 2 L62 12Z" fill="#ff6fa0" {...o} />
+      <Eyes y={4} dx={6} r={3.4} />
+      <ellipse cx="34" cy="98" rx="4" ry="10" fill="#ff6fa0" {...o} />
+      <Blush y={72} dx={18} cx={46} />
+    </g>
+  ),
+});
+
+/* ================= the savanna world ================= */
+const SAVANNA_OBJECTS = [
+  { e: "🌾", one: "grass stalk", many: "grass stalks" },
+  { e: "🪨", one: "pebble", many: "pebbles" },
+  { e: "🦴", one: "bone", many: "bones" },
+  { e: "🪶", one: "feather", many: "feathers" },
+  { e: "🌻", one: "sunflower", many: "sunflowers" },
+];
+const SAVANNA_ANIMALS = [
+  { id: "meerkat", name: "Meerkat", color: "#c9a876", hi: "Hello! I'm on watch!", anim: "bob", cover: "mound", x: 190, y: 800, s: 0.8 },
+  { id: "mongoose", name: "Mongoose", color: "#a89a7a", hi: "Quick quick! Hello!", anim: "wiggle", cover: "rock", x: 343, y: 825, s: 0.8 },
+  { id: "warthog", name: "Warthog", color: "#8d8068", hi: "Snort! Hello!", anim: "bob", cover: "bush", x: 496, y: 845 },
+  { id: "jackal", name: "Jackal", color: "#b4915e", hi: "Yip! Hello, friend!", anim: "sway", cover: "grass", x: 649, y: 815 },
+  { id: "gazelle", name: "Gazelle", color: "#d9b579", hi: "Boing! Hello!", anim: "hop", cover: "grass", x: 802, y: 795, s: 1.05 },
+  { id: "ostrich", name: "Ostrich", color: "#e8c27a", hi: "Hello! I run so fast!", anim: "peck", cover: "bush", x: 955, y: 775, s: 1.1 },
+  { id: "vulture", name: "Vulture", color: "#8a8a80", hi: "Hello! I watch from high!", anim: "blink", cover: "rock", x: 1108, y: 770 },
+  { id: "baboon", name: "Baboon", color: "#8a6b4a", hi: "Ooh ooh! Hello!", anim: "wiggle", cover: "acacia", x: 1261, y: 800 },
+  { id: "hyena", name: "Hyena", color: "#c9b183", hi: "Hee hee! Hello!", anim: "wiggle", cover: "rock", x: 1414, y: 825 },
+  { id: "leopard", name: "Leopard", color: "#eab857", hi: "Hello! I love to climb!", anim: "sway", cover: "acacia", x: 1567, y: 790 },
+  { id: "cheetah", name: "Cheetah", color: "#f0c878", hi: "Zoom! Hello!", anim: "hop", cover: "grass", x: 1720, y: 810 },
+  { id: "lion", name: "Lion", color: "#e3a74a", hi: "Roar! I mean, hello!", anim: "sway", cover: "bush", x: 1873, y: 795, s: 1.1 },
+  { id: "zebra", name: "Zebra", color: "#5a5a60", hi: "Hello! Count my stripes!", anim: "bob", cover: "grass", x: 2026, y: 800 },
+  { id: "buffalo", name: "Buffalo", color: "#584938", hi: "Hello! I'm strong!", anim: "bob", cover: "mound", x: 2179, y: 835, s: 1.05 },
+  { id: "giraffe", name: "Giraffe", color: "#f0cf80", hi: "Hello! I eat the tall leaves!", anim: "sway", cover: "acacia", x: 2332, y: 765, s: 1.05 },
+  { id: "rhino", name: "Rhino", color: "#9a9a90", hi: "Hello! Look at my horn!", anim: "bob", cover: "dune", x: 2485, y: 840 },
+  { id: "elephant", name: "Elephant", color: "#a9b0b8", hi: "Hello! I love the water!", anim: "sway", cover: "waterhole", x: 2638, y: 820, s: 1.05 },
+  { id: "hippo", name: "Hippo", color: "#8fae7c", hi: "Hello! The water is cool!", anim: "float", cover: "waterhole", x: 2791, y: 850 },
+  { id: "flamingo", name: "Flamingo", color: "#ff8fc8", hi: "Hello! I stand on one leg!", anim: "float", cover: "reeds", x: 2944, y: 790, s: 0.9 },
+  { id: "crocodile", name: "Crocodile", color: "#6fae5a", hi: "Hello! Snap snap!", anim: "blink", cover: "waterhole", x: 3097, y: 865 },
+];
+const SAVANNA_COVERS = {
+  grass: { dy: -38, clip: -14, paw: -100 },
+  bush: { dy: -80, clip: -25, paw: -175 },
+  rock: { dy: -72, clip: -25, paw: -150 },
+  mound: { pop: true, hole: -90, paw: -170 },
+  acacia: { pop: true, hole: -205, paw: -275 },
+  dune: { dy: -14, clip: -22, paw: -110 },
+  waterhole: { dy: -8, clip: -6, paw: -120 },
+  reeds: { dy: -60, clip: -15, paw: -185 },
+};
+const Pebble = ({ x, y, s = 1, c = "#b9ac94" }) => (
+  <ellipse cx={x} cy={y} rx={10 * s} ry={7 * s} fill={c} stroke={OL} strokeWidth="2" />
+);
+const SavGrass = ({ x, y, s }) => (
+  <path transform={`translate(${x} ${y}) scale(${s})`} d="M0 0 q-4 -12 -11 -18 M0 0 q0 -16 3 -26 M0 0 q5 -11 13 -16" stroke="#c9a84a" strokeWidth="3" fill="none" strokeLinecap="round" />
+);
+function savannaCover(type) {
+  switch (type) {
+    case "grass": {
+      const blades = [-44, -30, -16, -2, 12, 26, 40];
+      return { front: <g>
+        {blades.map((x, i) => <path key={x} d={`M${x} 0 Q${x + (i % 2 ? 6 : -6)} -30 ${x + (i % 2 ? 10 : -10)} -${56 + (i % 3) * 10}`} stroke={i % 2 ? "#c9a84a" : "#dcc06a"} strokeWidth="6" fill="none" strokeLinecap="round" />)}
+        <Blob fill="#d9b25e" shapes={[["e", -30, -12, 30, 20], ["e", 20, -14, 32, 22], ["r", -58, -16, 116, 16, 10]]} /></g> };
+    }
+    case "bush": return { front: <g>
+      <Blob fill="#8a9a52" shapes={[["c", -56, -40, 40], ["c", 0, -64, 48], ["c", 56, -40, 38], ["r", -90, -42, 180, 42, 20]]} />
+      <path d="M-30 -56 l6 -10 M-10 -70 l4 -10 M20 -66 l6 -10 M44 -50 l6 -10" stroke="#5a6a30" strokeWidth="2.4" fill="none" strokeLinecap="round" /></g> };
+    case "rock": return { front: <g>
+      <path d="M-96 0 C-102 -46 -70 -92 -18 -98 C30 -104 84 -78 92 -30 L96 0Z" fill="url(#g-rock)" stroke={OL} strokeWidth="5" strokeLinejoin="round" />
+      <path d="M-56 -64 Q-28 -86 6 -84" stroke="#e6e9e3" strokeWidth="8" fill="none" strokeLinecap="round" />
+      <Pebble x={-70} y={-4} s={0.8} /><Pebble x={66} y={-2} s={0.95} c="#c9b89a" /></g> };
+    case "mound": return {
+      back: <ellipse cx="0" cy="-8" rx="56" ry="18" fill="#7a5a38" />,
+      front: <g><path d="M-70 0 Q-80 -70 -20 -110 Q10 -118 30 -108 Q76 -84 70 0Z" fill="url(#g-mound)" stroke={OL} strokeWidth="4.5" strokeLinejoin="round" />
+        <circle cx="-8" cy="-66" r="8" fill="#4a3522" /><circle cx="20" cy="-86" r="6" fill="#4a3522" />
+        <path d="M-40 -20 q10 -4 18 2 M10 -36 q10 -4 18 2" stroke="#5e4428" strokeWidth="2.4" fill="none" /></g> };
+    case "acacia": return { front: <g>
+      <path d="M-14 0 C-16 -70 -16 -170 -14 -230 L14 -230 C16 -170 16 -70 14 0Z" fill="url(#g-barkH)" stroke={OL} strokeWidth="5" strokeLinejoin="round" />
+      <ellipse cx="0" cy="-205" rx="16" ry="20" fill="#5a3f26" stroke={OL} strokeWidth="3" /><ellipse cx="0" cy="-203" rx="11" ry="14" fill="#2a1a10" />
+      <ellipse cx="0" cy="-260" rx="150" ry="36" fill="url(#g-acacia)" stroke={OL} strokeWidth="4.5" />
+      <g fill="#7a9a4a" opacity=".55"><ellipse cx="-80" cy="-266" rx="30" ry="12" /><ellipse cx="60" cy="-270" rx="34" ry="12" /><ellipse cx="10" cy="-250" rx="26" ry="10" /></g></g> };
+    case "dune": return { front: <g>
+      <path d="M-100 0 Q-90 -36 0 -34 Q90 -36 100 0Z" fill="url(#g-sand)" stroke={OL} strokeWidth="4.5" />
+      <Pebble x={-60} y={-6} s={0.8} /><Pebble x={56} y={-4} s={0.9} c="#e0cfa0" /></g> };
+    case "waterhole": return { front: <g>
+      <path d="M-98 -14 q24 -10 48 0 t48 0 t48 0 V14 H-98Z" fill="#6ca0c4" opacity=".95" />
+      <path d="M-82 -4 q12 -6 24 0 M-12 -2 q12 -6 24 0 M48 -4 q12 -6 24 0" stroke="#dff3ff" strokeWidth="3" fill="none" strokeLinecap="round" /></g> };
+    case "reeds": {
+      const blades = [-50, -36, -22, -8, 6, 20, 34, 48];
+      return { front: <g>
+        {blades.map((x, i) => <path key={x} d={`M${x} 0 Q${x + (i % 2 ? 7 : -7)} -70 ${x + (i % 2 ? 12 : -10)} -${110 + (i % 3) * 18}`} stroke={i % 2 ? "#a08a3a" : "#c2a850"} strokeWidth="6" fill="none" strokeLinecap="round" />)}
+        <Blob fill="#8a9a52" shapes={[["e", -36, -26, 30, 34], ["e", 0, -32, 34, 38], ["e", 38, -26, 30, 32], ["r", -66, -30, 132, 30, 12]]} /></g> };
+    }
+    default: return {};
+  }
+}
+const SAV = (() => {
+  const r = rng(23);
+  const acacias = []; for (let x = -40; x < WW + 80; x += 140 + r() * 120) acacias.push({ x, y: 560 + r() * 20, s: 0.5 + r() * 0.35 });
+  const grassTufts = []; while (grassTufts.length < 140) grassTufts.push({ x: r() * WW, y: 660 + r() * 220, s: 0.7 + r() * 0.7 });
+  const pebbles = []; for (let i = 0; i < 30; i++) pebbles.push({ x: r() * WW, y: 760 + r() * 130, s: 0.6 + r() * 0.6 });
+  const dust = []; for (let i = 0; i < 16; i++) dust.push({ x: 600 + r() * 1800, y: 300 + r() * 380, d: r() * 5 });
+  return { acacias, grassTufts, pebbles, dust };
+})();
+function SavannaFar({ innerRef }) {
+  return (
+    <g ref={innerRef}>
+      <circle cx="2500" cy="260" r="140" fill="url(#g-sun)" /><circle cx="2500" cy="260" r="36" fill="#fff6b8" />
+      {[[200, 270, 0.9], [900, 250, 1], [1700, 290, 0.85], [2900, 300, 0.9]].map(([x, y, s], i) => <Cloud key={i} x={x} y={y} s={s} />)}
+      <path d="M0 540 L300 460 L600 520 L950 440 L1300 510 L1700 450 L2050 520 L2400 460 L2750 520 L3200 470 V700 H0Z" fill="url(#g-mtn)" opacity=".7" />
+      {SAV.acacias.map((t, i) => (
+        <g key={i} transform={`translate(${t.x} ${t.y}) scale(${t.s})`} opacity=".75">
+          <rect x="-4" y="-50" width="8" height="54" fill="#6e4a30" />
+          <ellipse cy="-62" rx="56" ry="15" fill="#5f7a3e" />
+        </g>
+      ))}
+      <rect x="-200" y="470" width={WW + 400} height="140" fill="url(#g-fog)" />
+    </g>
+  );
+}
+function SavannaMid({ innerRef }) {
+  return (
+    <g ref={innerRef}>
+      <path d={`M-200 700 C200 650 500 690 800 665 C1100 640 1400 680 1700 660 C2000 640 2300 675 2600 655 C2900 635 3100 660 ${WW + 200} 655 V900 H-200Z`} fill="#d9c070" />
+      {SAV.dust.map((d, i) => <circle key={i} className="mf-fly" cx={d.x} cy={d.y} r="3" fill="#fff6c8" style={{ animationDelay: `${d.d}s` }} />)}
+    </g>
+  );
+}
+function SavannaGround() {
+  return (
+    <g>
+      <path d="M0 650 C400 610 700 665 1000 640 C1400 610 1700 655 2000 648 C2300 638 2600 615 3200 625 V900 H0Z" fill="url(#g-gold)" />
+      <rect x="2560" y="0" width="640" height="900" fill="url(#g-dark)" opacity=".5" />
+      {SAV.acacias.map((t, i) => (
+        <g key={i} transform={`translate(${t.x + 40} 700) scale(${t.s + 0.2})`} opacity=".92">
+          <rect x="-7" y="-40" width="14" height="44" fill="#6e4a30" />
+          <ellipse cy="-58" rx="90" ry="22" fill="url(#g-acacia)" stroke={OL} strokeWidth="3" />
+        </g>
+      ))}
+      <ellipse cx="2800" cy="800" rx="260" ry="80" fill="#8a7a4a" />
+      <ellipse cx="2800" cy="800" rx="235" ry="64" fill="url(#g-water)" stroke="#e9f8ff" strokeWidth="4" />
+      {SAV.grassTufts.map((g, i) => <SavGrass key={i} {...g} />)}
+      {SAV.pebbles.map((p, i) => <Pebble key={i} {...p} />)}
+      <Signpost x={40} y={720} label="Grassland" /><Signpost x={900} y={700} label="Acacia Grove" /><Signpost x={1900} y={700} label="Rocky Kopje" /><Signpost x={2560} y={690} label="Watering Hole" />
+    </g>
+  );
+}
+
 
 /* ================= Save the Deer (chase game) ================= */
 // Gentle chase: the tiger only creeps closer on a wrong answer, never catches Dotty, and there is no timer.
@@ -1349,6 +1622,9 @@ const WORLDS = {
   sea: { id: "sea", name: "Under the Sea", animals: SEA_ANIMALS, covers: SEA_COVERS, cover: seaCover, Far: SeaFar, Mid: SeaMid, Ground: SeaGround,
     sky: "url(#g-sea)", bg: "#2a8fc4", marker: "bubble", objects: SEA_OBJECTS, back: "Back to the sea 🐚", place: "sea", hero: "clownfish",
     welcome: "Splash! Welcome under the sea! Swipe to swim. Tap a bubble to find a hiding friend!" },
+  savanna: { id: "savanna", name: "Sunny Savanna", animals: SAVANNA_ANIMALS, covers: SAVANNA_COVERS, cover: savannaCover, Far: SavannaFar, Mid: SavannaMid, Ground: SavannaGround,
+    sky: "url(#g-sky)", bg: "#f0d27a", marker: "paw", objects: SAVANNA_OBJECTS, back: "Back to the savanna 🦁", place: "savanna", hero: "lion",
+    welcome: "Welcome to the savanna! Swipe to explore. Tap a paw to find a hiding friend!" },
 };
 
 function WorldDefs({ world }) {
@@ -1359,6 +1635,7 @@ function WorldDefs({ world }) {
       {lin("g-bark", "#a8774e", "#7a5234")}{lin("g-wood", "#f4d3a2", "#d9aa70")}{lin("g-rock", "#d6dad2", "#8d958c")}{lin("g-dirt", "#bf8b5c", "#8a5c36")}
       {lin("g-meadow", "#a8db78", "#62ab4b")}{lin("g-water", "#9bdcf4", "#3d9ccd")}{lin("g-mtn", "#bdd6de", "#9dbdc6")}{lin("g-hill", "#bfe58e", "#86c565")}
       {lin("g-sand", "#f7e2ad", "#dcb978")}{lin("g-srock", "#8fb0c0", "#5a7f92")}
+      {lin("g-gold", "#f0d27a", "#c99a46")}{lin("g-acacia", "#8aab4f", "#4f7a34")}{lin("g-mound", "#c99a5e", "#8a6232")}
       <linearGradient id="g-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8ee0f5" /><stop offset=".3" stopColor="#4fb6dd" /><stop offset="1" stopColor="#1f6fa3" /></linearGradient>
       <linearGradient id="g-deep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#0d2f5a" stopOpacity="0" /><stop offset=".35" stopColor="#0d2f5a" stopOpacity=".3" /><stop offset="1" stopColor="#0d2f5a" stopOpacity=".5" /></linearGradient>
       <linearGradient id="g-sray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" stopOpacity=".45" /><stop offset="1" stopColor="#ffffff" stopOpacity="0" /></linearGradient>
@@ -1451,6 +1728,7 @@ function GrownUps({ p, setP, onClose }) {
   const [confirm, setConfirm] = useState(false);
   const weak = Object.entries(p.weak).filter(([, w]) => w > 0).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([n]) => n);
   const hide = (id) => setP({ ...p, foundBy: { ...p.foundBy, [id]: [] } });
+  const hideDinos = () => setP({ ...p, dinos: [] });
   return (
     <div className="mf-back" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="mf-sheet plain" role="dialog" aria-label="Grown-ups">
@@ -1462,7 +1740,7 @@ function GrownUps({ p, setP, onClose }) {
             <tr key={s}><td>{SKILL_NAMES[s]}</td><td>{h.length ? `${Math.round(ratio(h) * 100)}% of ${h.length}` : "–"}</td><td>{mastered(p, s) ? "Confident" : i <= p.unlocked ? "Practising" : "Coming next"}</td></tr>); })}</tbody>
         </table>
         <p className="mf-note"><strong>Numbers to watch:</strong> {weak.length ? weak.join(", ") : "none yet"}</p>
-        <p className="mf-note"><strong>Friends found:</strong> {Object.values(WORLDS).map((w) => `${w.name} ${(p.foundBy[w.id] || []).length}/${w.animals.length}`).join(" · ")}</p>
+        <p className="mf-note"><strong>Friends found:</strong> {Object.values(WORLDS).map((w) => `${w.name} ${(p.foundBy[w.id] || []).length}/${w.animals.length}`).join(" · ")} · Dino Egg Rescue {(p.dinos || []).length}/{DINO_IDS.length} · Number Drive level {(p.driveLevel || 0) + 1}</p>
         <div className="mf-focus"><span className="mf-label">Practise</span>
           {["auto", ...SKILLS].map((f) => <button key={f} className="mf-pill" aria-pressed={p.focus === f} onClick={() => setP({ ...p, focus: f })}>{f === "auto" ? "Auto" : SKILL_NAMES[f]}</button>)}
         </div>
@@ -1470,6 +1748,8 @@ function GrownUps({ p, setP, onClose }) {
         <div className="mf-row">
           <button className="mf-btn small ghost" onClick={() => hide("forest")}>Hide forest animals again</button>
           <button className="mf-btn small ghost" onClick={() => hide("sea")}>Hide sea animals again</button>
+          <button className="mf-btn small ghost" onClick={() => hide("savanna")}>Hide savanna animals again</button>
+          <button className="mf-btn small ghost" onClick={hideDinos}>Hide dinos again</button>
           {!confirm ? <button className="mf-btn small ghost" onClick={() => setConfirm(true)}>Reset all progress</button>
             : <button className="mf-btn small danger" onClick={() => { setP(defaultProgress()); setConfirm(false); }}>Yes, reset everything</button>}
         </div>
@@ -1513,9 +1793,42 @@ function WorldMap({ p, onPick, onGrown, onExit }) {
         <span className="mf-card-name">Save the Deer</span>
         <span className="mf-card-count">Saved {p.deerSaved || 0} {(p.deerSaved || 0) === 1 ? "time" : "times"}</span>
       </button>
+      <button className="mf-world-card dino" onClick={() => onPick("dino")} aria-label={`Dino Egg Rescue, ${(p.dinos || []).length} of ${DINO_IDS.length} dinos found`}>
+        <span className="mf-card-art" aria-hidden="true">
+          <DinoSvg id={DINO_IDS[0]} className="mf-card-hero" />
+          <span className="mf-card-peeks">{DINO_IDS.slice(0, 4).map((id) => <DinoSvg key={id} id={id} className={(p.dinos || []).includes(id) ? "" : "mf-silhouette"} />)}</span>
+        </span>
+        <span className="mf-card-name">Dino Egg Rescue</span>
+        <span className="mf-card-count">{(p.dinos || []).length} / {DINO_IDS.length} dinos</span>
+      </button>
+      <button className="mf-world-card drive" onClick={() => onPick("drive")} aria-label={`Number Drive Adventure, level ${(p.driveLevel || 0) + 1}, ${p.driveRounds || 0} drives completed`}>
+        <span className="mf-card-art" aria-hidden="true">
+          <svg className="mf-card-chase" viewBox="0 0 280 110" overflow="visible">
+            <svg x="40" y="10" width="200" height="100" viewBox="-70 -60 140 100" overflow="visible">
+              <path d="M-58 18 Q-58 -8 -30 -10 L-10 -34 Q6 -42 24 -34 L40 -10 Q62 -8 62 18Z" fill="#e3443a" stroke={OL} strokeWidth="3" strokeLinejoin="round" />
+              <circle cx="-32" cy="22" r="13" fill="#2b1d16" stroke={OL} strokeWidth="2" /><circle cx="32" cy="22" r="13" fill="#2b1d16" stroke={OL} strokeWidth="2" />
+              <ellipse cx="0" cy="-16" rx="17" ry="14" fill="#cc8b52" stroke={OL} strokeWidth="2.6" />
+              <Eyes y={-18} dx={6} r={3} cx={0} /><Blush y={-11} dx={10} cx={0} />
+            </svg>
+          </svg>
+        </span>
+        <span className="mf-card-name">Number Drive Adventure</span>
+        <span className="mf-card-count">Level {(p.driveLevel || 0) + 1} · {p.driveRounds || 0} drives</span>
+      </button>
     </div>
   );
 }
+
+// Shared surface for other adventure screens (currently just DinoRescue.jsx)
+// that want the same audio/voice helpers, skill engine, hint-driven
+// activities, and art primitives Forest/Sea/Savanna/Chase already use —
+// purely additive, every existing internal call site above is untouched.
+export {
+  tone, chime, soft, sparkle, say, subscribePrompt, getLastPrompt,
+  makeChallenge, planSession,
+  BAActivity, OrderActivity, AddActivity,
+  OL, Eyes, Blush, Blob, Wavy, rng, Cloud, Signpost,
+};
 
 /* ================= app ================= */
 export default function MagicalForest({ onExit } = {}) {
@@ -1546,7 +1859,7 @@ export default function MagicalForest({ onExit } = {}) {
     midRef.current && midRef.current.setAttribute("transform", `translate(${(s * 0.28).toFixed(1)} 0)`);
     if (!scrolled && el.scrollLeft > 40) setScrolled(true);
   };
-  function pickWorld(id) { tone(660, 0.1); setWorldId(id); if (id === "deer") return; setScrolled(false); setFresh(null); say(WORLDS[id].welcome); }
+  function pickWorld(id) { tone(660, 0.1); setWorldId(id); if (!WORLDS[id]) return; setScrolled(false); setFresh(null); say(WORLDS[id].welcome); }
   function nextSkill() { if (!queue.current.length) queue.current = planSession(pRef.current); return queue.current.shift(); }
   function openSpot(a) { if (open) return; tone(660, 0.1); setOpen({ a, phase: "ask", ch: makeChallenge(nextSkill(), pRef.current, W.objects), key: Date.now() }); }
   const onStep = (num, missed, isOrder) => setP((prev) => {
@@ -1583,6 +1896,20 @@ export default function MagicalForest({ onExit } = {}) {
     <div className="mf-app" style={{ background: "#fff3d6" }}>
       <ChaseGame p={p} onStep={onStep} recordAnswer={recordAnswer} onExit={() => setWorldId(null)}
         onWin={() => setP((prev) => ({ ...prev, deerSaved: (prev.deerSaved || 0) + 1 }))} />
+    </div>
+  );
+  if (worldId === "dino") return (
+    <div className="mf-app" style={{ background: "#cdeedd" }}>
+      <DinoRescue p={p} onStep={onStep} recordAnswer={recordAnswer} onExit={() => setWorldId(null)}
+        onHatch={(id) => setP((prev) => { const dinos = prev.dinos || []; return dinos.includes(id) ? prev : { ...prev, dinos: [...dinos, id] }; })}
+        onRoundDone={() => setP((prev) => ({ ...prev, dinoRescued: (prev.dinoRescued || 0) + 1 }))} />
+    </div>
+  );
+  if (worldId === "drive") return (
+    <div className="mf-app" style={{ background: "#cdeedd" }}>
+      <NumberDriveAdventure p={p} onStep={onStep} recordAnswer={recordAnswer} onExit={() => setWorldId(null)}
+        onLevelUp={() => setP((prev) => ({ ...prev, driveLevel: (prev.driveLevel || 0) + 1 }))}
+        onRoundDone={() => setP((prev) => ({ ...prev, driveRounds: (prev.driveRounds || 0) + 1 }))} />
     </div>
   );
   if (!W) return (
