@@ -68,7 +68,7 @@
 .question-card-count-item {
   font-size: 30px;
   line-height: 1;
-  animation: count-pop 0.4s ease backwards;
+  animation: count-pop 0.5s var(--ease-spring) backwards;
 }
 
 @keyframes count-pop {
@@ -113,7 +113,7 @@
 .question-card-addition-item {
   font-size: 28px;
   line-height: 1;
-  animation: count-pop 0.4s ease backwards;
+  animation: count-pop 0.5s var(--ease-spring) backwards;
 }
 
 .question-card-addition-op,
@@ -202,4 +202,15 @@
     width: 92px;
     height: 92px;
   }
+}
+
+/* Each new question springs up into place (GameScreen keys the card on the
+   question id so this replays every time). */
+.question-card {
+  animation: rise-in var(--dur-slow) var(--ease-spring) backwards;
+}
+
+.question-card-numeral,
+.question-card-word-row {
+  animation: pop-in var(--dur-slow) var(--ease-spring) 0.1s backwards;
 }

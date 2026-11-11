@@ -18,7 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
+  transition: transform 0.12s ease, opacity 0.2s ease;
+  animation: rise-in var(--dur-slow) var(--ease-spring) backwards;
 }
 
 .answer-choice--compact {
@@ -26,10 +27,6 @@
   line-height: 1.15;
 }
 
-.answer-choice:active:not(:disabled) {
-  transform: scale(0.95);
-  box-shadow: var(--shadow-press);
-}
 
 .answer-choice:disabled {
   cursor: default;
@@ -58,13 +55,15 @@
 .answer-choice--correct {
   background: #bdeab8;
   outline: 3px solid var(--grass-dark);
-  animation: answer-pop 0.4s ease;
+  animation: answer-pop 0.6s var(--ease-spring);
+  animation-delay: 0s !important;
 }
 
 .answer-choice--wrong {
   background: #ffc9c9;
   outline: 3px solid #e2564f;
-  animation: answer-shake 0.4s ease;
+  animation: answer-wobble 0.5s ease;
+  animation-delay: 0s !important;
 }
 
 .answer-choice-mark {
@@ -76,32 +75,43 @@
 
 @keyframes answer-pop {
   0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
+    transform: scale(0.9);
   }
   100% {
-    transform: scale(1);
+    transform: scale(1.04);
   }
 }
 
-@keyframes answer-shake {
+.answer-choice--correct {
+  transform: scale(1.04);
+}
+
+/* A friendly head-shake rather than a harsh error rattle. */
+@keyframes answer-wobble {
   0%,
   100% {
-    transform: translateX(0);
+    transform: rotate(0deg);
   }
-  25% {
-    transform: translateX(-6px);
+  20% {
+    transform: rotate(-4deg);
   }
-  75% {
-    transform: translateX(6px);
+  45% {
+    transform: rotate(3.5deg);
   }
+  70% {
+    transform: rotate(-2deg);
+  }
+}
+
+.answer-choice-mark {
+  animation: pop-in 0.4s var(--ease-spring) backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .answer-choice,
   .answer-choice--correct,
-  .answer-choice--wrong {
+  .answer-choice--wrong,
+  .answer-choice-mark {
     animation: none;
   }
 }

@@ -5,6 +5,7 @@ import { GameHeader } from '../components/GameHeader';
 import { QuestionCard } from '../components/QuestionCard';
 import { AnswerGrid } from '../components/AnswerGrid';
 import { SideCritter } from '../components/SideCritter';
+import { ConceptStory, STORY_FOR, markStorySeen, shouldShowStory } from '../components/ConceptStory';
 import { useSpeech } from '../hooks/useSpeech';
 import type { ActivityId, AnswerChoice, LevelResult, NumberSettings, Question } from '../types';
 import './GameScreen.css';
@@ -55,6 +56,14 @@ export const GameScreen = ({
     [level],
   );
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A short animated "watch first" scene for this skill, at most once a day.
+  const storyKind = STORY_FOR[activityId];
+  const [showStory, setShowStory] = useState(() => shouldShowStory(activityId));
+  const inStory = showStory && storyKind !== undefined;
+  const finishStory = () => {
+    markStorySeen(activityId);
+    setShowStory(false);
+  };
 
   useEffect(() => {
     return () => {
@@ -67,10 +76,11 @@ export const GameScreen = ({
   }, [question, speak]);
 
   useEffect(() => {
-    speakPrompt();
-    // Only re-run when the question identity changes.
+    // The story narrates itself; the question is read once it has finished.
+    if (!inStory) speakPrompt();
+    // Only re-run when the question identity (or the story phase) changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [question.id]);
+  }, [question.id, inStory]);
 
   const handleSelect = (choice: AnswerChoice) => {
     if (revealed) return;
@@ -113,6 +123,9 @@ export const GameScreen = ({
 
   if (!activity) return null;
 
+  const pickedCorrect = revealed && question.choices.find((c) => c.id === selectedId)?.isCorrect === true;
+  const critterMood = !revealed ? 'idle' : pickedCorrect ? 'cheer' : 'oops';
+
   return (
     <div className="game-screen">
       <GameHeader
@@ -125,23 +138,31 @@ export const GameScreen = ({
         childName={childName}
       />
 
+      {showStory && storyKind !== undefined ? (
+        <div className="game-screen-body">
+          <ConceptStory kind={storyKind} speak={speak} onDone={finishStory} />
+        </div>
+      ) : (
       <div className="game-screen-body">
         <QuestionCard
+          key={`q-${question.id}`}
           question={question}
           onHearWord={question.displayWord ? () => speak(question.spokenPrompt) : undefined}
           speechSupported={supported}
         />
 
         <AnswerGrid
+          key={`a-${question.id}`}
           choices={question.choices}
           selectedId={selectedId}
           revealed={revealed}
           onSelect={handleSelect}
         />
       </div>
+      )}
 
       <div className="game-screen-critter">
-        <SideCritter kind={critter} />
+        <SideCritter kind={critter} mood={critterMood} />
       </div>
     </div>
   );

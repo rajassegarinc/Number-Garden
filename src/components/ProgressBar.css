@@ -16,10 +16,14 @@
 }
 
 .progress-bar-fill {
+  width: 100%;
   height: 100%;
   background: linear-gradient(90deg, #7bd97e, #4caf50);
   border-radius: 999px;
-  transition: width 0.4s ease;
+  /* Slides the full-width fill in with a transform instead of animating
+     width, which forced a layout on every frame. */
+  transition: transform 0.6s var(--ease-spring);
+  will-change: transform;
 }
 
 .progress-bar-label {

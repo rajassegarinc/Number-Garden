@@ -32,8 +32,10 @@ export const RiverProgressStrip = ({ current, total }: RiverProgressStripProps) 
           <span key={i} className={`river-strip-stone ${i <= current ? 'river-strip-stone--crossed' : ''}`} />
         ))}
       </div>
-      <div className="river-strip-elephant" style={{ left: `${pct}%` }}>
-        <CelebrationAnimal kind="elephant" pose="bounce" size={34} />
+      <div className="river-strip-rail" style={{ transform: `translateX(${pct}%)` }}>
+        <div className="river-strip-elephant">
+          <CelebrationAnimal kind="elephant" pose="bounce" size={34} />
+        </div>
       </div>
       <div className="river-strip-mother">
         <CelebrationAnimal kind="elephant" pose="wave" flip size={42} />

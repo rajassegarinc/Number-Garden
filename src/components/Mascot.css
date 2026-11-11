@@ -8,6 +8,88 @@
   animation: mascot-bounce 0.9s ease-in-out infinite;
 }
 
+.mascot--poked {
+  animation: mascot-giggle 0.7s var(--ease-out-soft);
+}
+
+@keyframes mascot-giggle {
+  0% {
+    transform: scale(1, 1);
+  }
+  15% {
+    transform: scale(1.1, 0.88);
+  }
+  40% {
+    transform: translateY(-16px) scale(0.95, 1.07) rotate(-5deg);
+  }
+  62% {
+    transform: translateY(0) scale(1.07, 0.93) rotate(4deg);
+  }
+  100% {
+    transform: scale(1, 1) rotate(0deg);
+  }
+}
+
+.mascot-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-blink 5s ease-in-out infinite;
+}
+
+@keyframes mascot-blink {
+  0%,
+  45%,
+  51%,
+  100% {
+    transform: scaleY(1);
+  }
+  48% {
+    transform: scaleY(0.1);
+  }
+}
+
+.mascot-ear {
+  transform-box: fill-box;
+  animation: mascot-ear-flap 4.2s ease-in-out infinite;
+}
+
+.mascot-ear--l {
+  transform-origin: 100% 60%;
+}
+
+.mascot-ear--r {
+  transform-origin: 0% 60%;
+  animation-name: mascot-ear-flap-r;
+}
+
+@keyframes mascot-ear-flap {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(-10deg);
+  }
+  88% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes mascot-ear-flap-r {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(10deg);
+  }
+  88% {
+    transform: rotate(-5deg);
+  }
+}
+
 .mascot-trunk {
   animation: mascot-trunk-wiggle 2.6s ease-in-out infinite;
   transform-origin: 100px 118px;
@@ -66,6 +148,9 @@
 @media (prefers-reduced-motion: reduce) {
   .mascot,
   .mascot--excited,
+  .mascot--poked,
+  .mascot-eyes,
+  .mascot-ear,
   .mascot-trunk,
   .mascot-sparkle {
     animation: none;

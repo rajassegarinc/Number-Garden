@@ -17,7 +17,7 @@ export const ProgressBar = ({ current, total }: ProgressBarProps) => {
         aria-valuemax={total}
         aria-label={`Question ${current} of ${total}`}
       >
-        <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
+        <div className="progress-bar-fill" style={{ transform: `translateX(${pct - 100}%)` }} />
       </div>
       <span className="progress-bar-label" aria-hidden="true">
         {current}/{total}

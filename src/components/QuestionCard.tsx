@@ -33,7 +33,7 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
           aria-label={`${question.displayNumber} ${question.countIcon}`}
         >
           {Array.from({ length: question.displayNumber }).map((_, i) => (
-            <span key={i} className="question-card-count-item" style={{ animationDelay: `${i * 0.04}s` }}>
+            <span key={i} className="question-card-count-item" style={{ animationDelay: `${0.15 + i * 0.05}s` }}>
               {question.countIcon}
             </span>
           ))}
@@ -48,21 +48,40 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
         >
           <div className="question-card-addition-group">
             {Array.from({ length: question.addend1 }).map((_, i) => (
-              <span key={i} className="question-card-addition-item">
+              <span key={i} className="question-card-addition-item" style={{ animationDelay: `${0.15 + i * 0.07}s` }}>
                 {question.additionIcon}
               </span>
             ))}
           </div>
-          <span className="question-card-addition-op">+</span>
+          <span
+            className="question-card-addition-op pop-in"
+            style={{ animationDelay: `${0.2 + question.addend1 * 0.07}s` }}
+          >
+            +
+          </span>
           <div className="question-card-addition-group">
             {Array.from({ length: question.addend2 }).map((_, i) => (
-              <span key={i} className="question-card-addition-item">
+              <span
+                key={i}
+                className="question-card-addition-item"
+                style={{ animationDelay: `${0.35 + (question.addend1 + i) * 0.07}s` }}
+              >
                 {question.additionIcon}
               </span>
             ))}
           </div>
-          <span className="question-card-addition-op">=</span>
-          <span className="question-card-addition-mark">?</span>
+          <span
+            className="question-card-addition-op pop-in"
+            style={{ animationDelay: `${0.45 + (question.addend1 + question.addend2) * 0.07}s` }}
+          >
+            =
+          </span>
+          <span
+            className="question-card-addition-mark pop-in"
+            style={{ animationDelay: `${0.55 + (question.addend1 + question.addend2) * 0.07}s` }}
+          >
+            ?
+          </span>
         </div>
       )}
 
@@ -71,7 +90,8 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
           {question.sequence.map((n, i) => (
             <span
               key={i}
-              className={`question-card-sequence-item ${i === question.blankIndex ? 'question-card-sequence-item--blank' : ''}`}
+              className={`question-card-sequence-item ${i === question.blankIndex ? 'question-card-sequence-item--blank' : 'pop-in'}`}
+              style={i === question.blankIndex ? undefined : { animationDelay: `${0.12 + i * 0.06}s` }}
             >
               {i === question.blankIndex ? '?' : n}
             </span>

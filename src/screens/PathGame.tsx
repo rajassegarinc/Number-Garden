@@ -141,6 +141,7 @@ export const PathGame = ({ activityId, level, soundOn, childName, onExit, onLeve
           </div>
 
           <AnswerGrid
+            key={question.id}
             choices={question.choices}
             selectedId={selectedId}
             revealed={revealed}
@@ -153,7 +154,7 @@ export const PathGame = ({ activityId, level, soundOn, childName, onExit, onLeve
       {/* Hidden during the lesson so it doesn't cover the Back button. */}
       {!inLesson && (
         <div className="game-screen-critter">
-          <SideCritter kind={critter} />
+          <SideCritter kind={critter} mood={!revealed ? 'idle' : wasCorrect ? 'cheer' : 'oops'} />
         </div>
       )}
     </div>

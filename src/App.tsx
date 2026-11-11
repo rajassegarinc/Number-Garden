@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Scenery } from './components/Scenery';
 import { BottomNavigation } from './components/BottomNavigation';
 import { WelcomeScreen } from './screens/WelcomeScreen';
@@ -23,6 +23,7 @@ import { LearningPaths } from './screens/LearningPaths';
 import { PathGame } from './screens/PathGame';
 import { useProgress } from './hooks/useProgress';
 import { getActivity, getEffectiveLevelCount } from './data/activities';
+import { setFxSound } from './motion/fx';
 import type { ActivityId, LevelResult, MissionId, Screen } from './types';
 import './App.css';
 
@@ -47,6 +48,11 @@ function App() {
   const [activeActivity, setActiveActivity] = useState<ActivityId | null>(null);
   const [activeMission, setActiveMission] = useState<MissionId | null>(null);
   const [lastResult, setLastResult] = useState<LevelResult | null>(null);
+
+  // Shared tap/answer sounds follow the same mute button as everything else.
+  useEffect(() => {
+    setFxSound(progress.soundOn);
+  }, [progress.soundOn]);
 
   const goHome = () => {
     setScreen('home');
@@ -128,6 +134,8 @@ function App() {
     <div className="app-shell">
       <Scenery />
       <main className={`app-content ${screen !== 'game' && screen !== 'mission' && screen !== 'market' && screen !== 'adventures' ? 'app-content--with-nav' : ''}`}>
+        {/* Keyed so every screen change fades in (see motion/motion.css). */}
+        <div className="screen-enter" key={`${screen}-${activeActivity ?? ''}-${activeMission ?? ''}`}>
         {screen === 'home' && (
           <HomeScreen
             progress={progress}
@@ -328,6 +336,7 @@ function App() {
             onSetWordMatchMaxNumber={setWordMatchMaxNumber}
           />
         )}
+        </div>
       </main>
 
       {screen !== 'game' && screen !== 'mission' && screen !== 'market' && screen !== 'adventures' && (

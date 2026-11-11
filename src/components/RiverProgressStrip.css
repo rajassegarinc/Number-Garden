@@ -10,7 +10,11 @@
 
 .river-strip-water {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  /* Extra width on the left so the stripes can slide with a transform. */
+  left: -80px;
   background: repeating-linear-gradient(
     100deg,
     rgba(255, 255, 255, 0.22) 0px,
@@ -22,11 +26,12 @@
 }
 
 @keyframes river-strip-flow {
+  /* 79.2px = three stripe periods (26px at 100deg), so the loop is seamless. */
   from {
-    background-position-x: 0;
+    transform: translateX(0);
   }
   to {
-    background-position-x: 72px;
+    transform: translateX(79.2px);
   }
 }
 
@@ -51,12 +56,22 @@
   background: #ffe58a;
 }
 
+/* Full-width rail moved with translateX(%) so the hop is a GPU transform
+   rather than an animated `left`. */
+.river-strip-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 0;
+  transition: transform 0.6s var(--ease-spring);
+}
+
 .river-strip-elephant {
   position: absolute;
-  bottom: 2px;
+  left: 0;
+  bottom: 0;
   transform: translateX(-50%);
-  transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 3px 4px rgba(47, 58, 74, 0.3));
 }
 
 .river-strip-mother {

@@ -64,10 +64,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.62);
   border-radius: var(--radius-lg);
   padding: 10px 16px 10px 6px;
-  backdrop-filter: blur(2px);
 }
 
 .home-hero-card {
@@ -111,7 +110,6 @@
 
 .home-adventure-animals > * {
   margin-right: -14px;
-  filter: drop-shadow(0 2px 3px rgba(47, 58, 74, 0.2));
 }
 
 .home-adventure-text {

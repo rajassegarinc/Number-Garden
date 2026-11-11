@@ -1,0 +1,123 @@
+/* Shared motion system. One set of timings/easings so every screen moves
+   the same way. Rule for anything added later: animate only `transform`,
+   `opacity` (and the standalone `scale`/`translate`/`rotate`), never
+   width/height/top/left/box-shadow/filter, so it stays on the GPU and
+   stays smooth on a phone. */
+
+:root {
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.32s;
+  --dur-slow: 0.55s;
+}
+
+/* A real overshoot-and-settle spring where the browser supports linear(). */
+@supports (animation-timing-function: linear(0, 1)) {
+  :root {
+    --ease-spring: linear(
+      0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163,
+      1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, 0.991, 0.977 51%, 0.974 53.8%, 0.975 57.1%,
+      0.997 69.8%, 1.003 76.9%, 1.004 83.8%, 1
+    );
+  }
+}
+
+/* The single particle canvas used by src/motion/fx.ts. */
+.fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Screen change: opacity only. A transform here would turn this wrapper
+   into the containing block for the position: fixed critters and trays
+   inside the screens and make them jump when the animation ends. */
+.screen-enter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  animation: screen-fade var(--dur-base) var(--ease-out-soft) backwards;
+}
+
+@keyframes screen-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reusable entrances. Use with `animation-delay` for a stagger. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise-in {
+  animation: rise-in var(--dur-slow) var(--ease-spring) backwards;
+}
+
+.pop-in {
+  animation: pop-in var(--dur-slow) var(--ease-spring) backwards;
+}
+
+/* Screen furniture that every game shares. */
+.game-header-wrap {
+  animation: drop-in var(--dur-base) var(--ease-out-soft) backwards;
+}
+
+.activity-card {
+  animation: rise-in var(--dur-slow) var(--ease-spring) backwards;
+}
+.activity-card:nth-child(2) {
+  animation-delay: 0.04s;
+}
+.activity-card:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.activity-card:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.activity-card:nth-child(5) {
+  animation-delay: 0.16s;
+}
+.activity-card:nth-child(6) {
+  animation-delay: 0.2s;
+}
+.activity-card:nth-child(n + 7) {
+  animation-delay: 0.24s;
+}

@@ -48,17 +48,30 @@
 }
 
 .paths-stop--next .paths-stop-marker {
+  position: relative;
   background: var(--color-yellow-accent);
-  animation: paths-glow 1.6s ease-in-out infinite;
+}
+
+/* Pulsing ring drawn on a pseudo-element and animated with transform +
+   opacity (the old version animated box-shadow, which repaints each frame). */
+.paths-stop--next .paths-stop-marker::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 183, 3, 0.75);
+  animation: paths-glow 1.6s ease-out infinite;
+  pointer-events: none;
 }
 
 @keyframes paths-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 183, 3, 0.6);
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
   }
-  50% {
-    box-shadow: 0 0 0 8px rgba(255, 183, 3, 0);
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
   }
 }
 
@@ -89,7 +102,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .paths-stop--next .paths-stop-marker {
+  .paths-stop--next .paths-stop-marker::after {
     animation: none;
+    opacity: 0;
   }
 }

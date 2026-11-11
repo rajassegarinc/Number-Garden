@@ -1,7 +1,35 @@
 .side-critter {
-  animation: critter-peek 3.4s ease-in-out infinite;
   transform-origin: bottom center;
-  filter: drop-shadow(0 6px 8px rgba(47, 58, 74, 0.18));
+}
+
+/* The whole animal moves as one SVG group; the ground shadow stays put
+   and just breathes, which sells the hop. (Replaces a CSS drop-shadow
+   filter that had to be re-rendered on every animation frame.) */
+.side-critter-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: critter-peek 3.4s ease-in-out infinite;
+}
+
+.side-critter-shadow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.side-critter-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: critter-blink 4.6s ease-in-out infinite;
+}
+
+.side-critter-ear {
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
+  animation: critter-ear 5.2s ease-in-out infinite;
+}
+
+.side-critter-ear--r {
+  animation-delay: 0.15s;
 }
 
 @keyframes critter-peek {
@@ -14,8 +42,101 @@
   }
 }
 
+@keyframes critter-blink {
+  0%,
+  44%,
+  50%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  47%,
+  95%,
+  97% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes critter-ear {
+  0%,
+  78%,
+  100% {
+    transform: rotate(0deg);
+  }
+  84% {
+    transform: rotate(-12deg);
+  }
+  90% {
+    transform: rotate(8deg);
+  }
+}
+
+/* Right answer: squash, jump, land, wiggle. */
+.side-critter--cheer .side-critter-body {
+  animation: critter-cheer 0.9s var(--ease-out-soft);
+}
+
+.side-critter--cheer .side-critter-shadow {
+  animation: critter-shadow-hop 0.9s var(--ease-out-soft);
+}
+
+@keyframes critter-cheer {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  12% {
+    transform: translateY(2px) scale(1.12, 0.86);
+  }
+  38% {
+    transform: translateY(-26px) scale(0.94, 1.08) rotate(-6deg);
+  }
+  58% {
+    transform: translateY(0) scale(1.1, 0.9) rotate(0deg);
+  }
+  72% {
+    transform: translateY(-8px) scale(0.98, 1.03) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+}
+
+@keyframes critter-shadow-hop {
+  0%,
+  58%,
+  100% {
+    transform: scale(1);
+    opacity: 0.14;
+  }
+  38% {
+    transform: scale(0.6);
+    opacity: 0.07;
+  }
+}
+
+/* Wrong answer: a sympathetic tilt, never a telling-off. */
+.side-critter--oops .side-critter-body {
+  animation: critter-oops 0.8s ease-in-out;
+}
+
+@keyframes critter-oops {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-9deg) translateY(2px);
+  }
+  65% {
+    transform: rotate(5deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .side-critter {
+  .side-critter-body,
+  .side-critter-shadow,
+  .side-critter-eyes,
+  .side-critter-ear {
     animation: none;
   }
 }
