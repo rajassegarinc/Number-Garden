@@ -84,7 +84,9 @@ const drawHeart = (c: CanvasRenderingContext2D, r: number) => {
 const tick = (now: number) => {
   if (!canvas || !ctx) return;
   // Clamp dt so a backgrounded tab doesn't fling everything off screen.
-  const dt = Math.min((now - lastTime) / 1000, 0.034);
+  // The first frame's timestamp can be slightly earlier than the
+  // performance.now() taken in start(), so dt must never go negative.
+  const dt = Math.max(0, Math.min((now - lastTime) / 1000, 0.034));
   lastTime = now;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -112,7 +114,7 @@ const tick = (now: number) => {
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rot);
     ctx.fillStyle = p.color;
-    const s = p.size * scaleIn * (0.6 + 0.4 * fade);
+    const s = Math.max(0, p.size * scaleIn * (0.6 + 0.4 * fade));
     if (p.shape === 'star') drawStar(ctx, s);
     else if (p.shape === 'heart') drawHeart(ctx, s);
     else if (p.shape === 'rect') ctx.fillRect(-s * 0.5, -s * 0.8, s, s * 1.6);
