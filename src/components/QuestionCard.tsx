@@ -9,6 +9,10 @@ interface QuestionCardProps {
 }
 
 export const QuestionCard = ({ question, onHearWord, speechSupported }: QuestionCardProps) => {
+  // Local copies so the stagger delays can be used inside the map callbacks.
+  const a1 = question.addend1 ?? 0;
+  const a2 = question.addend2 ?? 0;
+
   return (
     <div className="question-card">
       <p className="question-card-prompt">{question.prompt}</p>
@@ -55,7 +59,7 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
           </div>
           <span
             className="question-card-addition-op pop-in"
-            style={{ animationDelay: `${0.2 + question.addend1 * 0.07}s` }}
+            style={{ animationDelay: `${0.2 + a1 * 0.07}s` }}
           >
             +
           </span>
@@ -64,7 +68,7 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
               <span
                 key={i}
                 className="question-card-addition-item"
-                style={{ animationDelay: `${0.35 + (question.addend1 + i) * 0.07}s` }}
+                style={{ animationDelay: `${0.35 + (a1 + i) * 0.07}s` }}
               >
                 {question.additionIcon}
               </span>
@@ -72,13 +76,13 @@ export const QuestionCard = ({ question, onHearWord, speechSupported }: Question
           </div>
           <span
             className="question-card-addition-op pop-in"
-            style={{ animationDelay: `${0.45 + (question.addend1 + question.addend2) * 0.07}s` }}
+            style={{ animationDelay: `${0.45 + (a1 + a2) * 0.07}s` }}
           >
             =
           </span>
           <span
             className="question-card-addition-mark pop-in"
-            style={{ animationDelay: `${0.55 + (question.addend1 + question.addend2) * 0.07}s` }}
+            style={{ animationDelay: `${0.55 + (a1 + a2) * 0.07}s` }}
           >
             ?
           </span>
