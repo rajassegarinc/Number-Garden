@@ -3,6 +3,19 @@ import type { ActivityId, ActivityMeta, NumberSettings } from '../types';
 // Colors cycle through the 5 pastel tokens so no two adjacent cards match.
 export const ACTIVITIES: ActivityMeta[] = [
   {
+    id: 'dino-match',
+    title: 'Dino Egg Match',
+    shortTitle: 'Dino Match',
+    description: 'Count the eggs and find each dinosaur mummy',
+    color: 'green',
+    emoji: '🦕',
+    mode: 'dinomatch',
+    levelCount: 4,
+    // Rounds per level; each round has 3 or 4 dinosaur + nest pairs.
+    questionsPerLevel: 3,
+    levelLabels: ['Eggs 1-4', 'Eggs 1-6', 'Eggs 1-10', 'Tricky neighbours'],
+  },
+  {
     id: 'number-recognition',
     title: 'Listen & Select',
     shortTitle: 'Listen',
@@ -363,6 +376,8 @@ export const getEffectiveLevelCount = (
   settings: NumberSettings = DEFAULT_SETTINGS,
 ): number => {
   if (activityId === 'mixed-challenge') return 1;
+  // Dino Egg Match steps up by skill (how many eggs, how alike the nests are).
+  if (activityId === 'dino-match') return levelCount;
   // Learning paths progress by skill, so parent number caps don't shorten them.
   if (getActivity(activityId)?.group === 'path') return levelCount;
   if (activityId === 'picture-addition') {

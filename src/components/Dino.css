@@ -1,0 +1,228 @@
+.dino {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dino svg {
+  overflow: visible;
+}
+
+.dino-all,
+.dino-tail,
+.dino-leg,
+.dino-torso,
+.dino-head,
+.dino-eye,
+.dino-shadow {
+  transform-box: fill-box;
+}
+
+/* --- idle: breathe, wag, blink, look about --- */
+.dino-all {
+  transform-origin: 50% 100%;
+}
+
+.dino-torso {
+  transform-origin: 50% 100%;
+  animation: dino-breathe 2.8s ease-in-out infinite;
+}
+
+.dino-tail {
+  transform-origin: 100% 70%;
+  animation: dino-wag 1.9s ease-in-out infinite;
+}
+
+.dino-head {
+  transform-origin: 15% 95%;
+  animation: dino-look 5.5s ease-in-out infinite;
+}
+
+.dino-eye {
+  transform-origin: center;
+  animation: dino-blink 4.2s ease-in-out infinite;
+}
+
+.dino-leg {
+  transform-origin: 50% 0%;
+}
+
+.dino-shadow {
+  transform-origin: center;
+}
+
+@keyframes dino-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.02, 1.04);
+  }
+}
+
+@keyframes dino-wag {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes dino-look {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-7deg);
+  }
+  82% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes dino-blink {
+  0%,
+  46%,
+  52%,
+  100% {
+    transform: scaleY(1);
+  }
+  49% {
+    transform: scaleY(0.1);
+  }
+}
+
+/* --- walking: legs stride in opposite pairs, body bobs --- */
+.dino--walking .dino-all {
+  animation: dino-bob 0.36s ease-in-out infinite;
+}
+
+.dino--walking .dino-leg--near-a,
+.dino--walking .dino-leg--far-b {
+  animation: dino-stride 0.36s ease-in-out infinite;
+}
+
+.dino--walking .dino-leg--near-b,
+.dino--walking .dino-leg--far-a {
+  animation: dino-stride 0.36s ease-in-out infinite reverse;
+}
+
+.dino--walking .dino-tail {
+  animation-duration: 0.5s;
+}
+
+@keyframes dino-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.5deg);
+  }
+}
+
+@keyframes dino-stride {
+  0%,
+  100% {
+    transform: rotate(24deg);
+  }
+  50% {
+    transform: rotate(-24deg);
+  }
+}
+
+/* --- happy: crouch, jump, stomp, wiggle --- */
+.dino--happy .dino-all {
+  animation: dino-jump 0.85s var(--ease-out-soft) 2;
+}
+
+.dino--happy .dino-shadow {
+  animation: dino-shadow-jump 0.85s var(--ease-out-soft) 2;
+}
+
+.dino--happy .dino-tail {
+  animation-duration: 0.35s;
+}
+
+.dino--happy .dino-head {
+  animation: dino-head-up 0.85s var(--ease-out-soft) 2;
+}
+
+@keyframes dino-jump {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  14% {
+    transform: translateY(3px) scale(1.1, 0.86);
+  }
+  42% {
+    transform: translateY(-24px) scale(0.95, 1.08) rotate(-5deg);
+  }
+  66% {
+    transform: translateY(0) scale(1.08, 0.9) rotate(0deg);
+  }
+  82% {
+    transform: translateY(-5px) scale(0.99, 1.02) rotate(3deg);
+  }
+}
+
+@keyframes dino-shadow-jump {
+  0%,
+  66%,
+  100% {
+    transform: scale(1);
+    opacity: 0.14;
+  }
+  42% {
+    transform: scale(0.6);
+    opacity: 0.07;
+  }
+}
+
+@keyframes dino-head-up {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  42% {
+    transform: rotate(-14deg);
+  }
+}
+
+/* --- "not this one": a gentle head shake --- */
+.dino--no .dino-head {
+  animation: dino-head-no 0.7s ease-in-out;
+}
+
+@keyframes dino-head-no {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-10deg);
+  }
+  45% {
+    transform: rotate(8deg);
+  }
+  70% {
+    transform: rotate(-6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dino-all,
+  .dino-tail,
+  .dino-leg,
+  .dino-torso,
+  .dino-head,
+  .dino-eye,
+  .dino-shadow {
+    animation: none !important;
+  }
+}

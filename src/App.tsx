@@ -21,6 +21,7 @@ import { GardenHub } from './screens/GardenHub';
 import { MarketMission } from './screens/MarketMission';
 import { LearningPaths } from './screens/LearningPaths';
 import { PathGame } from './screens/PathGame';
+import { DinoMatch } from './screens/DinoMatch';
 import { useProgress } from './hooks/useProgress';
 import { getActivity, getEffectiveLevelCount } from './data/activities';
 import { setFxSound } from './motion/fx';
@@ -228,6 +229,19 @@ function App() {
             onExit={goToAdventureMap}
             recordLevelResult={recordLevelResult}
             recordMissionResult={recordMissionResult}
+          />
+        )}
+
+        {screen === 'game' && activeActivity && activeMeta?.mode === 'dinomatch' && (
+          <DinoMatch
+            key={`${activeActivity}-${activeLevel}-${lastResult?.correct ?? 'start'}`}
+            activityId={activeActivity}
+            level={activeLevel}
+            soundOn={progress.soundOn}
+            settings={settings}
+            childName={progress.childName}
+            onExit={goHome}
+            onLevelComplete={handleLevelComplete}
           />
         )}
 

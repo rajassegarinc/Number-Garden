@@ -1,4 +1,5 @@
 export type ActivityId =
+  | 'dino-match'
   | 'number-recognition'
   | 'word-match'
   | 'before-after'
@@ -26,7 +27,7 @@ export type ActivityId =
   | 'path-graphs'
   | 'path-butterfly';
 
-export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline' | 'path';
+export type ActivityMode = 'choice' | 'match' | 'order' | 'flowerline' | 'caterpillar' | 'numberline' | 'path' | 'dinomatch';
 
 export type CardColor = 'pink' | 'yellow' | 'purple' | 'blue' | 'green';
 
