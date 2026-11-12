@@ -1,7 +1,21 @@
 import type { ActivityId, ActivityMeta, NumberSettings } from '../types';
+import { SPEECH_TITLE } from './speechLines';
 
 // Colors cycle through the 5 pastel tokens so no two adjacent cards match.
 export const ACTIVITIES: ActivityMeta[] = [
+  {
+    id: 'speech-practice',
+    title: SPEECH_TITLE,
+    shortTitle: 'My Speech',
+    description: 'Listen, say it, then perform it on stage',
+    color: 'pink',
+    emoji: '🎤',
+    mode: 'speech',
+    levelCount: 3,
+    // One per line of the speech (see data/speechLines.ts).
+    questionsPerLevel: 3,
+    levelLabels: ['Listen and say', 'Say it from pictures', 'On stage!'],
+  },
   {
     id: 'dino-match',
     title: 'Dino Egg Match',
@@ -377,7 +391,7 @@ export const getEffectiveLevelCount = (
 ): number => {
   if (activityId === 'mixed-challenge') return 1;
   // Dino Egg Match steps up by skill (how many eggs, how alike the nests are).
-  if (activityId === 'dino-match') return levelCount;
+  if (activityId === 'dino-match' || activityId === 'speech-practice') return levelCount;
   // Learning paths progress by skill, so parent number caps don't shorten them.
   if (getActivity(activityId)?.group === 'path') return levelCount;
   if (activityId === 'picture-addition') {
